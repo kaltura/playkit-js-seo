@@ -16,32 +16,10 @@ module.exports = (env, { mode }) => {
           options: { configFile: mode === 'development' ? 'tsconfig.dev.json' : 'tsconfig.json' },
           exclude: /node_modules/
         },
-        {
-          test: /\.scss/,
-          use: [
-            'style-loader',
-            {
-              loader: 'css-loader',
-              options: {
-                esModule: true,
-                modules: {
-                  localIdentName: '[local]',
-                  namedExport: true
-                }
-              }
-            },
-            {
-              loader: 'sass-loader',
-              options: {
-                sourceMap: mode === 'development'
-              }
-            }
-          ]
-        }
       ]
     },
     resolve: {
-      extensions: ['.tsx', '.ts', '.js']
+      extensions: ['.ts', '.js']
     },
     output: {
       filename: 'playkit-seo.js',
@@ -50,7 +28,6 @@ module.exports = (env, { mode }) => {
     },
     externals: {
       '@playkit-js/kaltura-player-js': 'root KalturaPlayer',
-      preact: 'root KalturaPlayer.ui.preact'
     },
     devServer: {
       static: {

@@ -4,7 +4,7 @@ import { setup } from '@playkit-js/kaltura-player-js';
 import { config, targetId } from '../mock/config';
 import { mediaData } from '../mock/media-sourc';
 
-describe('Upper Bar Manager', () => {
+describe('SEO', () => {
   let player;
 
   before(() => {
@@ -29,12 +29,12 @@ describe('Upper Bar Manager', () => {
     player = setup({
       ...config,
       plugins: {
-        pluginExample: {
+        seo: {
           developerName: 'Stiven Hoking'
         }
       }
     });
-    const pluginInstance = player.plugins.pluginExample;
+    const pluginInstance = player.plugins.seo;
     player.setMedia({ sources: { ...mediaData } });
     await player.ready();
 
