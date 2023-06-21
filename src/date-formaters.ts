@@ -31,7 +31,7 @@ export function convertUnixTimestampToISO8601(unixTimestamp: number): string {
   const timezoneOffset = date.getTimezoneOffset();
 
   // Calculate the new time value by subtracting the timezone offset
-  const newTimeValue = date.getTime() - (timezoneOffset * 60 * 1000);
+  const newTimeValue = date.getTime() - timezoneOffset * 60 * 1000;
 
   // Create a new Date object with the updated time value
   const newDate = new Date(newTimeValue);
