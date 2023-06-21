@@ -10,14 +10,19 @@ export const pluginName = 'seo';
 export class Seo extends BasePlugin<Record<string, unknown>> {
   protected static defaultConfig: Record<string, unknown>;
 
-  public static isValid(): boolean {
-    return true;
+  constructor(name: string, player: KalturaPlayer, config?: Record<string, unknown>) {
+    super(name, player, config);
+    this.eventManager.listen(this.player, this.player.Event.SOURCE_SELECTED, () => this.handleSEO());
   }
 
   protected loadMedia(): void {
+    return;
+  }
+
+  private handleSEO(): void {
     if (this.hasStructuredDataRequiredProperties()) {
       const SEOStructuredData: WithContext<VideoObject> = this.getSEOStructuredData();
-      Seo.sendSEOStructuredData(SEOStructuredData);
+      Seo.isPlayerIframeEmbed() ? Seo.sendSEOStructuredData(SEOStructuredData) : this.injectStructureData(SEOStructuredData);
     } else {
       this.logger.debug('SEO Structured Data Required properties are missing');
     }
@@ -46,5 +51,20 @@ export class Seo extends BasePlugin<Record<string, unknown>> {
     const thumbnailUrl = this.player.sources.poster;
     const createdAt = this.player.sources.metadata.createdAt;
     return name && thumbnailUrl && createdAt;
+  }
+
+  private static isPlayerIframeEmbed(): boolean {
+    return window.self !== window.top;
+  }
+
+  public static isValid(): boolean {
+    return true;
+  }
+
+  private injectStructureData(jsonLdData: WithContext<VideoObject>): void {
+    const script = document.createElement('script');
+    script.setAttribute('type', 'application/ld+json');
+    script.textContent = JSON.stringify(jsonLdData);
+    document.head.appendChild(script);
   }
 }
