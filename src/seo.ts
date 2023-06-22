@@ -49,8 +49,8 @@ export class Seo extends BasePlugin<Record<string, unknown>> {
   private hasStructuredDataRequiredProperties(): boolean {
     const name = this.player.sources.metadata.name;
     const thumbnailUrl = this.player.sources.poster;
-    const createdAt = this.player.sources.metadata.createdAt;
-    return name && thumbnailUrl && createdAt;
+    const uploadDate = this.player.sources.metadata.createdAt;
+    return name && thumbnailUrl && uploadDate;
   }
 
   private static isPlayerIframeEmbed(): boolean {
