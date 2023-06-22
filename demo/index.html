@@ -7,6 +7,9 @@
 <!--    <script src="https://unpkg.com/@playkit-js/playkit-js-seo@latest/dist/playkit-seo.js"></script>-->
 <!--    for dev -->
     <script src="../playkit-seo.js"></script>
+  </head>
+  <body>
+  <h1>Child(Player) Page</h1>
     <div id="player-placeholder" style="width: 640px; height: 360px"></div>
     <script>
       const config = {
@@ -22,10 +25,7 @@
         }
       };
 
-
       const player = KalturaPlayer.setup(config);
-      Object.values(player.Event).forEach((event) => { if (event !== "progress" && event !== "timeupdate"  && event !== "fragloaded") { player.addEventListener(event, (event) => { console.error('event.type: ' + event.type); }); } });
-
       player.loadMedia({ entryId: "1_r62g23gz" });
 
     </script>
