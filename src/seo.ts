@@ -36,6 +36,7 @@ export class Seo extends BasePlugin<Record<string, unknown>> {
       description: this.player.sources.metadata.description,
       thumbnailUrl: this.player.sources.poster,
       uploadDate: convertUnixTimestampToISO8601(this.player.sources.metadata.createdAt),
+      expires: convertUnixTimestampToISO8601(this.player.sources.metadata.endDate),
       duration: convertDurationToISO8601(this.player.sources.duration!),
       contentUrl: this.player.selectedSource.url
     };
