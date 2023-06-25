@@ -1,4 +1,4 @@
-[![Build Status](https://app.travis-ci.com/kaltura/playkit-js-seo.svg?branch=master)](https://app.travis-ci.com/kaltura/playkit-js-seo)
+[![Build Status](https://github.com/kaltura/playkit-js-seo/actions/workflows/run_canary_full_flow.yaml/badge.svg)](https://github.com/kaltura/playkit-js-seo/actions/workflows/run_canary_full_flow.yaml)
 [![](https://img.shields.io/npm/v/@playkit-js/seo/latest.svg)](https://www.npmjs.com/package/@playkit-js/seo)
 [![](https://img.shields.io/npm/v/@playkit-js/seo/canary.svg)](https://www.npmjs.com/package/@playkit-js/seo/v/canary)
 
