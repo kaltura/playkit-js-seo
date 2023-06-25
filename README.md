@@ -14,7 +14,7 @@ either injected directly into the player or communicated to the parent frame if 
 By incorporating structured data, the plugin helps search engines understand and interpret video content more effectively. 
 This can lead to improved SEO rankings and enhanced visibility in search engine results.
 
-It relies on [kaltura player] core API for getting metadata and listing for player events.
+It relies on [kaltura player] core API for getting video metadata and listing for player events.
 
 playkit-js-seo is written in [TypeScript] (`*.ts`) (strongly typed superset of ES6), and transpiled in ECMAScript5 using [Webpack].
 
@@ -28,9 +28,10 @@ playkit-js-seo is written in [TypeScript] (`*.ts`) (strongly typed superset of E
 
 ## Features
 
-Automatically generates structured data based on the video metadata, including properties such as
-name, description, thumbnail URL, upload date, expiration date, duration, and content URL. The structured data is then
-either injected directly into the player or communicated to the parent frame if the player is embedded within an iframe.
+- Automatically generates structured data based on the video metadata, including properties such as
+  name, description, thumbnail URL, upload date, expiration date, duration, and content URL. 
+- The structured data is then
+  either injected directly into the player or communicated to the parent frame if the player is embedded within an iframe.
 
     
 ## Getting started with development
