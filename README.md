@@ -4,7 +4,7 @@
 
 # playkit-js-seo
 
-playkit-js-seo is a [kaltura player] plugin that provides search engine optimization (SEO) capabilities for video content played by [kaltura player] SDK and managed in [Kaltura Management Console (KMC)].
+**playkit-js-seo** is a [kaltura player] plugin that provides search engine optimization (SEO) capabilities for video content played by [kaltura player] SDK and managed in [Kaltura Management Console (KMC)].
 It integrates structured data (Schema.org) into the player to improve discoverability and visibility of video content on search engines.
 
 This plugin automatically generates structured data based on the video metadata, including properties such as
