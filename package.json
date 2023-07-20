@@ -46,7 +46,6 @@
     "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
     "@playkit-js/kaltura-player-js": "canary",
-    "@playkit-js/playkit-js-ui": "canary",
     "@types/chai": "^4.3.3",
     "@types/mocha": "^9.1.1",
     "@types/node": "^14.11.2",
@@ -97,5 +96,11 @@
     "Jonathan T. Gold",
     "Gilad Nadav",
     "Sivan Arganov"
-  ]
+  ],
+  "kaltura": {
+    "name": "seo",
+    "dependencies": {
+      "playkit-kaltura-cuepoints": "3.0.6"
+    }
+  }
 }
