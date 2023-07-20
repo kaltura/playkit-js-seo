@@ -1146,62 +1146,52 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@playkit-js/kaltura-player-js@canary":
-  version "3.14.6-canary.0-0cf6bf1"
-  resolved "https://registry.yarnpkg.com/@playkit-js/kaltura-player-js/-/kaltura-player-js-3.14.6-canary.0-0cf6bf1.tgz#258bf820deebd52a5d0a4fa98ffa141a66eb4e0e"
-  integrity sha512-msWc0A3HsipsT4PghjsQPPtlweXUE6J7Kh/q2AkE3A35BrGCMjsG6hU3CvI5R8oPigSviL3wPTPQi/AuHt0EZA==
+"@playkit-js/kaltura-player-js@@canary":
+  version "3.14.7-canary.0-cb855d8"
+  resolved "https://registry.yarnpkg.com/@playkit-js/kaltura-player-js/-/kaltura-player-js-3.14.7-canary.0-cb855d8.tgz#f31954e7409f0eb9109d599cfb99969646ed25c1"
+  integrity sha512-4bjBvT9FZuVGM+Xdk+mk+J7N+NDdCx4HYOp2pROrAg5o1h6zFhbSllznSv7pVEW5IacJtKRJwnQ6+2IYwxWH0g==
   dependencies:
     "@babel/polyfill" "^7.0.0"
-    "@playkit-js/playkit-js" "0.82.4-canary.0-78c2401"
-    "@playkit-js/playkit-js-dash" "1.34.3-canary.0-d041ba8"
-    "@playkit-js/playkit-js-hls" "1.32.4-canary.0-cb687d0"
-    "@playkit-js/playkit-js-providers" "2.39.4-canary.0-28f6822"
-    "@playkit-js/playkit-js-ui" "0.77.3-canary.0-6bce5fb"
+    "@playkit-js/playkit-js" "0.82.5-canary.0-4b68e38"
+    "@playkit-js/playkit-js-dash" "1.35.0-canary.0-799d1b8"
+    "@playkit-js/playkit-js-hls" "1.32.5-canary.0-a1c4870"
+    "@playkit-js/playkit-js-providers" "2.39.5-canary.0-9ee39ec"
+    "@playkit-js/playkit-js-ui" "0.77.4-canary.0-9de106a"
     "@types/preact-i18n" "^2.3.1"
-    hls.js "1.3.5"
+    hls.js "^1.4.8"
     intersection-observer "^0.12.0"
     proxy-polyfill "^0.3.0"
-    shaka-player "4.3.5"
+    shaka-player "4.3.7"
 
-"@playkit-js/playkit-js-dash@1.34.3-canary.0-d041ba8":
-  version "1.34.3-canary.0-d041ba8"
-  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js-dash/-/playkit-js-dash-1.34.3-canary.0-d041ba8.tgz#e28396603cd04de1f681127c42cbdff8533fc902"
-  integrity sha512-gNc76IwnT232/Dhom4/Hr3mybmH0sAevqMXUJ/fhMFmOmMCyUugCbLCaZJnV0dauEsHu+PKxfAlEscxozfgfKQ==
+"@playkit-js/playkit-js-dash@1.35.0-canary.0-799d1b8":
+  version "1.35.0-canary.0-799d1b8"
+  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js-dash/-/playkit-js-dash-1.35.0-canary.0-799d1b8.tgz#d88106596cf84ae4a448dcf352b7124d3381524b"
+  integrity sha512-6CMiyPoI57Tkybs8qkCDFwaPqzRezD7tZC69WWztIjhpiSZEjqMFHp6C0/Ez3LG/MMuR8gxWW37606ioiLtHMw==
 
-"@playkit-js/playkit-js-hls@1.32.4-canary.0-cb687d0":
-  version "1.32.4-canary.0-cb687d0"
-  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js-hls/-/playkit-js-hls-1.32.4-canary.0-cb687d0.tgz#9d84ca8e310ec0c18bfad43b190fe486b92f0767"
-  integrity sha512-N7DX8BbgpI+IO4MEJS5C6ZcCm0fhaF++F3eZw/J9VtCsY8QE3ptBklNcgOpJb4OdpSBjs2EymJ/Fd/emRHZn8g==
+"@playkit-js/playkit-js-hls@1.32.5-canary.0-a1c4870":
+  version "1.32.5-canary.0-a1c4870"
+  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js-hls/-/playkit-js-hls-1.32.5-canary.0-a1c4870.tgz#2c1ce566fe3e1ebb8dbcb4362b62385885beeb8a"
+  integrity sha512-4WY2YZEhXHAkD84kNCcMcbj1PdCPv/vb+yc/fL5a9ZJPfFTtdpP0Uo3ztu0NVq7Ez6kGPsSgTvswP4+zQUY9vA==
 
-"@playkit-js/playkit-js-providers@2.39.4-canary.0-28f6822":
-  version "2.39.4-canary.0-28f6822"
-  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js-providers/-/playkit-js-providers-2.39.4-canary.0-28f6822.tgz#e6db473253617e04c63f52a4da91eca0fd166b58"
-  integrity sha512-d8xv6ni9PGR7g9MgGxIONZDu1qFirU3EzX0pM6nFvu2XF9wo7NuGLV5bxjeEpzvD8z6oN+3ECIigdJVg9Ob1ng==
+"@playkit-js/playkit-js-providers@2.39.5-canary.0-9ee39ec":
+  version "2.39.5-canary.0-9ee39ec"
+  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js-providers/-/playkit-js-providers-2.39.5-canary.0-9ee39ec.tgz#58f7f0f0e72eb7b98f3bb9f2af53ea78e0a57771"
+  integrity sha512-CvMgRnQEiAoL64SGY5lKNwxoox8nQjS6Nt/vvEgK/kaksSXYDvccktH+rOFK32+WgCaE4Q2YEkXKjdJIU6eBEw==
 
-"@playkit-js/playkit-js-ui@0.77.3-canary.0-6bce5fb":
-  version "0.77.3-canary.0-6bce5fb"
-  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js-ui/-/playkit-js-ui-0.77.3-canary.0-6bce5fb.tgz#66e259b41b43a45286ddeca50b0861c513ca58d9"
-  integrity sha512-WAC4uWWjCQllOK6LsJ2kcARQleJHcvUomz/Vwpdts01fSJNDb0uboFSwXK0rIHw3PtNWXGFdEQDXUrwAEu/zeA==
+"@playkit-js/playkit-js-ui@0.77.4-canary.0-9de106a":
+  version "0.77.4-canary.0-9de106a"
+  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js-ui/-/playkit-js-ui-0.77.4-canary.0-9de106a.tgz#cd86b784b1586ba1708b6e2761d2b8e8ea3e551f"
+  integrity sha512-xo5vWPpNRTopszx4AnvdA3XhbjZfaY6/LCkqqT/+v1Kov0bNfVYG533QezkaRI7loELDZJQ8nHRi4yrth+NXOA==
   dependencies:
     preact "^10.3.4"
     preact-i18n "^2.0.0-preactx.2"
     react-redux "^7.2.0"
     redux "^4.0.5"
 
-"@playkit-js/playkit-js-ui@canary":
-  version "0.72.3-canary.e10264f"
-  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js-ui/-/playkit-js-ui-0.72.3-canary.e10264f.tgz#92c28fed8349f66b67136858feae67eb33172470"
-  integrity sha512-uK/BrA43Xyvs9P5lV830LTK1Opq++KHqQZzxGNe92ZoeXTgq0NssPD6yNKBlL7yd5Jmn50pBdoqogCUdvBSXfw==
-  dependencies:
-    preact "^10.3.4"
-    preact-i18n "^2.0.0-preactx.2"
-    react-redux "^7.2.0"
-    redux "^4.0.5"
-
-"@playkit-js/playkit-js@0.82.4-canary.0-78c2401":
-  version "0.82.4-canary.0-78c2401"
-  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js/-/playkit-js-0.82.4-canary.0-78c2401.tgz#8362ba780fd1744beefd6f671784d7fb1d44d908"
-  integrity sha512-67fOu+MJB5uPD7Y9H5GnBlqJ5QFwa+EHBuUNJ0gWRljpwgWEN22gtjpAPOi32uY8gbM/zbcdHq5aDAifgt/I7Q==
+"@playkit-js/playkit-js@0.82.5-canary.0-4b68e38":
+  version "0.82.5-canary.0-4b68e38"
+  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js/-/playkit-js-0.82.5-canary.0-4b68e38.tgz#8fa1d3471612a3a174fdca5510575e7d1c273285"
+  integrity sha512-qavtwNZshICYy2FtjNvEb29JwNQtueP4jYaCT3PAHbImE2O1B7u1QXxDQ0mOBkghJkMomiDvsKt104PsvAEshA==
   dependencies:
     js-logger "^1.6.0"
     ua-parser-js "1.0.2"
@@ -3879,10 +3869,10 @@ he@1.2.0:
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
 
-hls.js@1.3.5:
-  version "1.3.5"
-  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.3.5.tgz#0e8b0799ecf2feb7ba199f5e95f35ba9552e04f4"
-  integrity sha512-uybAvKS6uDe0MnWNEPnO0krWVr+8m2R0hJ/viql8H3MVK+itq8gGQuIYoFHL3rECkIpNH98Lw8YuuWMKZxp3Ew==
+hls.js@^1.4.8:
+  version "1.4.10"
+  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.4.10.tgz#3feac40f21a558453b243b5b926b7317e70624e1"
+  integrity sha512-wAVSj4Fm2MqOHy5+BlYnlKxXvJlv5IuZHjlzHu18QmjRzSDFQiUDWdHs5+NsFMQrgKEBwuWDcyvaMC9dUzJ5Uw==
 
 hoist-non-react-statics@^3.3.0, hoist-non-react-statics@^3.3.2:
   version "3.3.2"
@@ -6158,10 +6148,10 @@ setprototypeof@1.2.0:
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.2.0.tgz#66c9a24a73f9fc28cbe66b09fed3d33dcaf1b424"
   integrity sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==
 
-shaka-player@4.3.5:
-  version "4.3.5"
-  resolved "https://registry.yarnpkg.com/shaka-player/-/shaka-player-4.3.5.tgz#304d60ad867fb7a0780b850b32a9614296b842db"
-  integrity sha512-WkqvHm8QHOsQ71d/qoc2Wa6Z5rBrG3Zgsc6ho9I9e8Xwa0io+MeREgqBuG0z6qoXK55sTImipFhDoERrkmDdUg==
+shaka-player@4.3.7:
+  version "4.3.7"
+  resolved "https://registry.yarnpkg.com/shaka-player/-/shaka-player-4.3.7.tgz#beebf492afa4cd3036eb10d6d9d2b610c17f6e6e"
+  integrity sha512-3aeRb/AdVnGJKI1i23pD+b2e4eXljjJflxW+RLeWrSGHNRt/givvV3DyGIzpNQ9icUDatUyOtSkx8AdTXZWYXQ==
   dependencies:
     eme-encryption-scheme-polyfill "^2.1.1"
 
