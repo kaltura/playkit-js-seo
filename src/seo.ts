@@ -58,8 +58,7 @@ export class Seo extends BasePlugin<SEOConfig> {
       thumbnailUrl: this.player.sources.poster,
       uploadDate: convertUnixTimestampToISO8601(this.player.sources.metadata.createdAt!),
       duration: convertDurationToISO8601(this.player.sources.duration!),
-      contentUrl: this.player.selectedSource.url.concat('?st=30')
-      // transcript:
+      contentUrl: this.player.selectedSource.url
     };
 
     if (this.player.sources.metadata.endDate) {
