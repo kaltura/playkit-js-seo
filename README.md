@@ -8,7 +8,7 @@
 It integrates structured data (Schema.org) into the player to improve discoverability and visibility of video content on search engines.
 
 This plugin automatically generates structured data based on the video metadata, including properties such as
-name, description, thumbnail URL, upload date, expiration date, duration, and content URL. The structured data is then
+name, description, thumbnail URL, upload date, expiration date, duration, transcript, and chapters (if available). The structured data is then
 either injected directly into the player or communicated to the parent frame if the player is embedded within an iframe.
 
 By incorporating structured data, the plugin helps search engines understand and interpret video content more effectively. 
