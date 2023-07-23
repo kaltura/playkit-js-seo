@@ -31,7 +31,7 @@ module.exports = (env, { mode }) => {
     },
     devServer: {
       static: {
-        directory: path.join(__dirname, 'demo')
+        directory: path.join(__dirname, 'demo/dev')
       },
       client: {
         progress: true
