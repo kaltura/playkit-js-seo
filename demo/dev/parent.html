@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Parent-2 Page</title>
+</head>
+<body>
+<h1>Parent(Player host) Page</h1>
+<iframe id="myIframe" src="index.html" style="width: 640px; height: 460px"></iframe>
+
+<script>
+    // Listen for messages from the iframe
+    window.addEventListener('message', (event) => {
+        if (event.data.type === 'SEOStructuredData') {
+            console.log(`Event ${event.data.type} fired in iframe:`, event.data);
+        }
+    });
+</script>
+</body>
+</html>

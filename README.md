@@ -1,22 +1,27 @@
-[![Build Status](https://app.travis-ci.com/kaltura/playkit-js-seo.svg?branch=master)](https://app.travis-ci.com/kaltura/playkit-js-seo)
+[![Build Status](https://github.com/kaltura/playkit-js-seo/actions/workflows/run_canary_full_flow.yaml/badge.svg)](https://github.com/kaltura/playkit-js-seo/actions/workflows/run_canary_full_flow.yaml)
 [![](https://img.shields.io/npm/v/@playkit-js/seo/latest.svg)](https://www.npmjs.com/package/@playkit-js/seo)
 [![](https://img.shields.io/npm/v/@playkit-js/seo/canary.svg)](https://www.npmjs.com/package/@playkit-js/seo/v/canary)
 
 # playkit-js-seo
 
-playkit-js-seo is a [kaltura player] plugin that groups several UI services,
-in order to simplify and facilitate the customization of the [kaltura player] UI by providing a simple and clean API.
+**playkit-js-seo** is a [kaltura player] plugin that provides search engine optimization (SEO) capabilities for video content played by [kaltura player] SDK and managed in [Kaltura Management Console (KMC)].
+It integrates structured data (Schema.org) into the player to improve discoverability and visibility of video content on search engines.
 
-Each service manages a different area of UI functionality.
+This plugin automatically generates structured data based on the video metadata, including properties such as
+name, description, thumbnail URL, upload date, expiration date, duration, transcript, and chapters (if available). The structured data is then
+either injected directly into the player or communicated to the parent frame if the player is embedded within an iframe.
 
-It relies on [kaltura player] core API for managing UI features.
+By incorporating structured data, the plugin helps search engines understand and interpret video content more effectively. 
+This can lead to improved SEO rankings and enhanced visibility in search engine results.
 
-playkit-js-seo is written in [ECMAScript6] (`*.js`) and [TypeScript] (`*.ts`) (strongly typed superset of ES6), 
-and transpiled in ECMAScript5 using [Babel](https://babeljs.io/) and the [TypeScript compiler].
+It relies on [kaltura player] core API for getting video metadata and listing for player events.
+
+playkit-js-seo is written in [TypeScript] (`*.ts`) (strongly typed superset of ES6), and transpiled in ECMAScript5 using [Webpack].
 
 [Webpack] is used to build the distro bundle and serve the local development environment.
 
 [kaltura player]: https://github.com/kaltura/kaltura-player-js.
+[Kaltura Management Console (KMC)]: https://corp.kaltura.com/resources/case-studies/kaltura-management-console-kmc-walkthrough/.
 [ecmascript6]: https://github.com/ericdouglas/ES6-Learning#articles--tutorials
 [typescript]: https://www.typescriptlang.org/
 [typescript compiler]: https://www.typescriptlang.org/docs/handbook/compiler-options.html
@@ -24,7 +29,11 @@ and transpiled in ECMAScript5 using [Babel](https://babeljs.io/) and the [TypeSc
 
 ## Features
 
-  Write here your plugin description...
+- Automatically generates structured data based on the video metadata, including properties such as
+  name, description, thumbnail URL, upload date, expiration date, duration, and content URL. 
+- The structured data is then
+  either injected directly into the player or communicated to the parent frame if the player is embedded within an iframe.
+
     
 ## Getting started with development
 

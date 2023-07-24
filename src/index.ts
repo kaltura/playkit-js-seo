@@ -1,4 +1,4 @@
 import { registerPlugin } from '@playkit-js/kaltura-player-js';
-import { pluginName, Seo } from './seo';
+import { PLUGIN_NAME, Seo } from './seo';
 
-registerPlugin(pluginName, Seo);
+registerPlugin(PLUGIN_NAME, Seo);

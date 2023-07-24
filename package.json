@@ -24,11 +24,12 @@
     "dev": "npm run build:dev && webpack serve --open --mode development",
     "build:dev": "webpack --mode development",
     "build:prod": "webpack --mode production",
+    "build": "webpack --mode production",
     "watch": "webpack --watch --mode development",
     "test": "karma start --color --mode development",
     "test:debug": "DEBUG_UNIT_TESTS=1 karma start karma.conf.js --auto-watch --no-single-run --browsers Chrome",
     "test:watch": "karma start karma.conf.js --auto-watch --no-single-run",
-    "types:check": "tsc src/index.ts src/types/global.d.ts --jsx react --jsxFactory h --noEmit --target ESNext --moduleResolution node --experimentalDecorators --jsxFragmentFactory Fragment",
+    "types:check": "tsc src/index.ts --jsx react --jsxFactory h --noEmit --target ESNext --moduleResolution node --experimentalDecorators --jsxFragmentFactory Fragment",
     "types:ganarate": "tsc src/index.ts src/types/global.d.ts --declaration --emitDeclarationOnly --outFile types/modules.ts --jsx react --jsxFactory h --jsxFragmentFactory Fragment --stripInternal true --target ESNext --moduleResolution node --experimentalDecorators",
     "docs:ganarate": "typedoc",
     "lint:check": "eslint src tests --ext .ts,.tsx,.js --color ",
@@ -44,21 +45,20 @@
     "@babel/preset-env": "^7.17.10",
     "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
-    "@playkit-js/playkit-js-ui": "canary",
+    "@playkit-js/kaltura-player-js": "canary",
     "@types/chai": "^4.3.3",
     "@types/mocha": "^9.1.1",
     "@types/node": "^14.11.2",
     "@typescript-eslint/eslint-plugin": "^5.25.0",
     "@typescript-eslint/parser": "^5.25.0",
-    "conventional-github-releaser": "3.1.3",
     "babel-loader": "^8.2.4",
     "chai": "^4.3.6",
+    "conventional-github-releaser": "3.1.3",
     "css-loader": "^6.7.1",
     "eslint": "^7.32.0",
     "eslint-config-preact": "^1.3.0",
     "eslint-plugin-mocha": "^10.1.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "@playkit-js/kaltura-player-js": "canary",
     "karma": "^6.4.0",
     "karma-chrome-launcher": "^3.1.1",
     "karma-mocha": "^2.0.1",
@@ -70,6 +70,7 @@
     "promise-polyfill": "^8.2.3",
     "sass": "^1.52.1",
     "sass-loader": "^13.0.0",
+    "schema-dts": "^1.1.2",
     "sinon": "^14.0.0",
     "standard-version": "^9.5.0",
     "style-loader": "^3.3.1",
@@ -95,5 +96,11 @@
     "Jonathan T. Gold",
     "Gilad Nadav",
     "Sivan Arganov"
-  ]
+  ],
+  "kaltura": {
+    "name": "seo",
+    "dependencies": {
+      "playkit-kaltura-cuepoints": "3.0.6"
+    }
+  }
 }

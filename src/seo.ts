@@ -1,20 +1,166 @@
-import { BasePlugin } from '@playkit-js/kaltura-player-js';
+import { BasePlugin, KalturaPlayer } from '@playkit-js/kaltura-player-js';
+import { convertDurationToISO8601, convertUnixTimestampToISO8601 } from './date-formaters';
+import type { Clip, VideoObject, WithContext } from 'schema-dts';
+import { Chapter, CuePoint, SEOConfig, TimedMetadataEvent } from './types';
 
-export const pluginName = 'seo';
+export const PLUGIN_NAME = 'seo';
+const SEO_SCRIPT_ID = `${location.hostname}k-player-seo`;
 
-export class Seo extends BasePlugin<Record<string, unknown>> {
-  protected static defaultConfig: Record<string, unknown>;
+export class Seo extends BasePlugin<SEOConfig> {
+  protected static defaultConfig: SEOConfig;
+  private chaptersData?: Chapter[];
+  private transcriptData?: string;
+  private timedDataReadyPromise: Promise<void>;
+  private resolveTimedDataReadyPromise!: () => void;
+
+  constructor(name: string, player: KalturaPlayer, config?: SEOConfig) {
+    super(name, player, config);
+    this.eventManager.listenOnce(this.player, this.player.Event.Core.CHANGE_SOURCE_ENDED, async () => this.handleSEO());
+    this.timedDataReadyPromise = new Promise((resolve) => {
+      this.resolveTimedDataReadyPromise = resolve;
+    });
+  }
+
+  protected loadMedia(): void {
+    if (!this.cuePointManager) {
+      this.logger.warn("kalturaCuepoints haven't registered");
+      return;
+    }
+    this.eventManager.listen(this.player, this.player.Event.Core.TIMED_METADATA_ADDED, (e) => this.onTimedMetadataAdded(e));
+    this.registerCuePointTypes();
+  }
+
+  private async handleSEO(): Promise<void> {
+    if (this.hasStructuredDataRequiredProperties()) {
+      const SEOStructuredData: WithContext<VideoObject> = this.getSEOStructuredData();
+      if (Seo.isPlayerIframeEmbeded()) {
+        Seo.sendSEOStructuredData(SEOStructuredData);
+      } else if (this.isNotInjectedYet()) {
+        this.injectStructureData(SEOStructuredData);
+        await this.timedDataReadyPromise;
+        this.updateStructureDataWithTimeData();
+      }
+    } else {
+      this.logger.error('SEO Structured Data Required properties are missing');
+    }
+  }
+
+  private isNotInjectedYet(): boolean {
+    return !document.getElementById(SEO_SCRIPT_ID);
+  }
+
+  private getSEOStructuredData(): WithContext<VideoObject> {
+    const VideoStructuredData: WithContext<VideoObject> = {
+      '@context': 'https://schema.org',
+      '@type': 'VideoObject',
+      name: this.player.sources.metadata.name,
+      description: this.player.sources.metadata.description,
+      thumbnailUrl: this.player.sources.poster,
+      uploadDate: convertUnixTimestampToISO8601(this.player.sources.metadata.createdAt!),
+      duration: convertDurationToISO8601(this.player.sources.duration!),
+      contentUrl: this.player.selectedSource.url
+    };
+
+    if (this.player.sources.metadata.endDate) {
+      VideoStructuredData.expires = convertUnixTimestampToISO8601(this.player.sources.metadata.endDate);
+    }
+    return VideoStructuredData;
+  }
+
+  private updateStructureDataWithTimeData(): void {
+    const scriptTag = document.getElementById(SEO_SCRIPT_ID);
+    if (scriptTag) {
+      const data = JSON.parse(scriptTag.textContent!);
+      if (this.chaptersData?.length && this.config.baseSegmentsUrl) {
+        data.hasPart = this.getClips();
+      }
+      data.transcript = this.transcriptData;
+      scriptTag.textContent = JSON.stringify(data);
+    }
+  }
+
+  private getClips(): Clip[] {
+    return this.chaptersData!.map((chapter) => {
+      return {
+        '@type': 'Clip',
+        name: chapter.name,
+        startOffset: chapter.startTime,
+        endOffset: chapter.endTime,
+        url: `${this.config.baseSegmentsUrl}${chapter.startTime}`,
+        ...(chapter.description && { description: chapter.description })
+      };
+    });
+  }
+
+  private static sendSEOStructuredData(SEOStructuredData: WithContext<VideoObject>): void {
+    window.parent.postMessage({ type: 'SEOStructuredData', SEOStructuredData }, '*');
+  }
+
+  private hasStructuredDataRequiredProperties(): boolean {
+    const name = this.player.sources.metadata.name;
+    const thumbnailUrl = this.player.sources.poster;
+    const uploadDate = this.player.sources.metadata.createdAt;
+    return !!(name && thumbnailUrl && uploadDate);
+  }
+
+  private static isPlayerIframeEmbeded(): boolean {
+    return window.self !== window.top;
+  }
 
   public static isValid(): boolean {
     return true;
   }
 
-  protected loadMedia(): void {
-    this.todo();
+  private injectStructureData(jsonLdData: WithContext<VideoObject>): void {
+    const script = document.createElement('script');
+    script.id = SEO_SCRIPT_ID;
+    script.setAttribute('type', 'application/ld+json');
+    script.textContent = JSON.stringify(jsonLdData);
+    document.head.appendChild(script);
   }
 
-  private todo(): void {
-    // eslint-disable-next-line no-console
-    console.log('`HI this is SEO...');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private get cuePointManager(): any {
+    return this.player.getService('kalturaCuepoints');
+  }
+
+  private registerCuePointTypes(): void {
+    this.cuePointManager.registerTypes([this.cuePointManager.CuepointType.CHAPTER, this.cuePointManager.CuepointType.CAPTION]);
+  }
+
+  private onTimedMetadataAdded({ payload }: TimedMetadataEvent): void {
+    const { KalturaCuePointType, KalturaThumbCuePointSubType } = this.cuePointManager;
+    const chapterData: CuePoint[] = [];
+    const captionData: CuePoint[] = [];
+
+    payload.cues.forEach((cue: CuePoint) => {
+      const { metadata } = cue;
+      if (metadata?.cuePointType === KalturaCuePointType.THUMB && metadata?.subType === KalturaThumbCuePointSubType.CHAPTER) {
+        chapterData.push(cue);
+      }
+      if (metadata?.cuePointType === KalturaCuePointType.CAPTION) {
+        captionData.push(cue);
+      }
+    });
+    if (chapterData.length) {
+      this.chaptersData = Seo.extractRelevantChaptersData(chapterData);
+    }
+    if (captionData.length) {
+      this.transcriptData = Seo.generateTranscriptFromCuePoints(captionData);
+      this.resolveTimedDataReadyPromise();
+    }
+  }
+
+  private static extractRelevantChaptersData(chapterData: CuePoint[]): Chapter[] {
+    return chapterData.map(({ startTime, endTime, metadata }) => ({
+      startTime,
+      endTime,
+      name: metadata.title,
+      description: metadata.description
+    }));
+  }
+
+  private static generateTranscriptFromCuePoints(cuePointsArray: CuePoint[]): string {
+    return cuePointsArray.reduce((transcript, cuePoint) => transcript + ' ' + cuePoint.metadata.text, '').trim();
   }
 }
