@@ -48,7 +48,7 @@ For example, the following URL means the video starts at 2:00 minutes: _**"https
 so you need to supply: `{baseSegmentsUrl: "https://www.example.com/example?t="}` 
 and the plugin would concatenate the startTime according the chapters' metadata of the entry (see example [here](https://github.com/kaltura/playkit-js-seo/blob/master/demo/canary/index.html#L29))
 - **The player _'preload'_** option in playback config to be set to _'auto'_ (config.playback.preload = auto).
-- **Cue Points Manager Dependency**: The plugin depends on the Cue Points Manager package
+- **Cue Points Manager Dependency**: The plugin depends on the [Cue Points Manager plugin](https://github.com/kaltura/playkit-js-kaltura-cuepoints)
   to handle the cue points for chapters and transcript. 
   Make sure the Cue Points Manager package is included and properly integrated into your application
   and configurd in plugins section in player config.
