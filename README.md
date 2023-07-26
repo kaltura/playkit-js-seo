@@ -47,12 +47,11 @@ The clip URL must point to the same URL path as the video with additional query 
 For example, the following URL means the video starts at 2:00 minutes: _**"https://www.example.com/example?t=120"**_, 
 so you need to supply: `{baseSegmentsUrl: "https://www.example.com/example?t="}` 
 and the plugin would concatenate the startTime according the chapters' metadata of the entry (see example [here](https://github.com/kaltura/playkit-js-seo/blob/master/demo/canary/index.html#L29))
-- 
 - **The player _'preload'_** option in playback config to be set to _'auto'_ (config.playback.preload = auto).
 - **Cue Points Manager Dependency**: The plugin depends on the Cue Points Manager package
   to handle the cue points for chapters and transcript. 
- Make sure the Cue Points Manager package is included and properly integrated into your application
-and configurd in plugins section in player config.
+  Make sure the Cue Points Manager package is included and properly integrated into your application
+  and configurd in plugins section in player config.
 
 ## Getting started with development
 
