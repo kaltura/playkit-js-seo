@@ -34,14 +34,12 @@ const player = KalturaPlayer.setup(config);
 
 ### Configuration
 
-You can see the **seo** full configuration options [here](https://kaltura.github.io/playkit-js-seo/docs/api/<PATH-TO-YOUR-CONFIGURATION-DOC-FILE>)
-
-You can find configuration example [here](https://github.com/kaltura/playkit-js-seo/tree/master/demo/index.html)
+See [here](https://github.com/kaltura/playkit-js-seo#features)
 
 ## Full working example
 
-You can find Full working example [here](https://github.com/kaltura/playkit-js-seo/tree/master/demo)
+You can find Full working example [here](https://github.com/kaltura/playkit-js-seo/tree/master/demo/canary/)
 
 ## Demo
 
-[demo](https://kaltura.github.io/playkit-js-seo/demo/index.html)
+[demo](https://kaltura.github.io/playkit-js-seo/demo/canary/)

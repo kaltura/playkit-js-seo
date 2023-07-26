@@ -29,12 +29,31 @@ playkit-js-seo is written in [TypeScript] (`*.ts`) (strongly typed superset of E
 
 ## Features
 
-- Automatically generates structured data based on the video metadata, including properties such as
-  name, description, thumbnail URL, upload date, expiration date, duration, and content URL. 
-- The structured data is then
-  either injected directly into the player or communicated to the parent frame if the player is embedded within an iframe.
 
-    
+### Basic Player Metadata (No Configuration Required)
+In this mode, the SEO plugin will automatically generate structured data based on the basic video metadata, 
+including properties such as name, description, thumbnail URL, upload date, expiration date, and duration.
+
+- **This mode requires no additional configuration nor any additional dependency** and works out of the box.
+
+### Extra Data Mode
+In this **Chapters** and **Transcript** data also supplied in the seo structure data.
+**Chapters** enables key moments feature which is a way for users to navigate video segments like chapters in a book, 
+which can help users engage more deeply with your content, and **Transcript** provides richer search results with relevant keywords
+This mode requires:
+
+- **baseSegmentsUrl configuration**. A URL that points to a specific segment(chapter) in the video by start time query parameter.
+The clip URL must point to the same URL path as the video with additional query parameters that specify the time.
+For example, the following URL means the video starts at 2:00 minutes: _**"https://www.example.com/example?t=120"**_, 
+so you need to supply: `{baseSegmentsUrl: "https://www.example.com/example?t="}` 
+and the plugin would concatenate the startTime according the chapters' metadata of the entry (see example [here](https://github.com/kaltura/playkit-js-seo/blob/master/demo/canary/index.html#L29))
+- 
+- **The player _'preload'_** option in playback config to be set to _'auto'_ (config.playback.preload = auto).
+- **Cue Points Manager Dependency**: The plugin depends on the Cue Points Manager package
+  to handle the cue points for chapters and transcript. 
+ Make sure the Cue Points Manager package is included and properly integrated into your application
+and configurd in plugins section in player config.
+
 ## Getting started with development
 
 ```sh
