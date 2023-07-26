@@ -37,19 +37,18 @@ including properties such as name, description, thumbnail URL, upload date, expi
 - **This mode requires no additional configuration nor any additional dependency** and works out of the box.
 
 ### Extra Data Mode
-In this **Chapters** and **Transcript** data also supplied in the seo structure data.
+In this mode, the SEO plugin includes **Chapters** and **Transcript** properties in the structured data.
 **Chapters** enables key moments feature which is a way for users to navigate video segments like chapters in a book, 
-which can help users engage more deeply with your content, and **Transcript** provides richer search results with relevant keywords
+which can help users engage more deeply with your content. **Transcript** provides richer search results with relevant keywords
 This mode requires:
 
-- **baseSegmentsUrl configuration**. A URL that points to a specific segment(chapter) in the video by start time query parameter.
-The clip URL must point to the same URL path as the video with additional query parameters that specify the time.
-For example, the following URL means the video starts at 2:00 minutes: _**"https://www.example.com/example?t=120"**_, 
-so you need to supply: `{baseSegmentsUrl: "https://www.example.com/example?t="}` 
-and the plugin would concatenate the startTime according the chapters' metadata of the entry (see example [here](https://github.com/kaltura/playkit-js-seo/blob/master/demo/canary/index.html#L29))
-- **The player _'preload'_** option in playback config to be set to _'auto'_ (config.playback.preload = auto).
+- **baseSegmentsUrl configuration**. A URL that points to a specific segment(chapter) in the video corresponding to the time offset specified in the query parameter.
+   The clip URL must point to the same URL path as the video with additional query parameters that specify the time (see [here](https://github.com/kaltura/playkit-js-seo/blob/master/docs/guide.md#configuration) for more details).
+
+- Set the player's **'preload'** option in the playback config to **'auto'** (config.playback.preload = auto).
+
 - **Cue Points Manager Dependency**: The plugin depends on the [Cue Points Manager plugin](https://github.com/kaltura/playkit-js-kaltura-cuepoints)
-  to handle the cue points for chapters and transcript. 
+  to handle the cue points for chapters and transcript.
   Make sure the Cue Points Manager package is included and properly integrated into your application
   and configurd in plugins section in player config.
 
