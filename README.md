@@ -140,7 +140,7 @@ An overview of this project's design, can be found [here](https://kaltura.atlass
 
 ## Demo
 
-[https://kaltura.github.io/playkit-js-seo/demo/index.html](https://kaltura.github.io/playkit-js-seo/demo/index.html)
+[https://kaltura.github.io/playkit-js-seo/demo/canary/index.html](https://kaltura.github.io/playkit-js-seo/demo/canary/index.html)
 
 
 ## Compatibility

@@ -36,10 +36,10 @@ const player = KalturaPlayer.setup(config);
 
 See [here](https://github.com/kaltura/playkit-js-seo#features)
 
-## Full working example
+## Full working code example
 
 You can find Full working example [here](https://github.com/kaltura/playkit-js-seo/tree/master/demo/canary/)
 
-## Demo
+## Live demo
 
-[demo](https://kaltura.github.io/playkit-js-seo/demo/canary/)
+[demo](https://kaltura.github.io/playkit-js-seo/demo/canary/index.html)
