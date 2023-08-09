@@ -29,6 +29,7 @@ playkit-js-seo is written in [TypeScript] (`*.ts`) (strongly typed superset of E
 
 ## Features
 
+The plugin can be activated in two modes:
 
 ### Basic Player Metadata (No Configuration Required)
 In this mode, the SEO plugin will automatically generate structured data based on the basic video metadata, 
@@ -51,6 +52,48 @@ This mode requires:
   to handle the cue points for chapters and transcript.
   Make sure the Cue Points Manager package is included and properly integrated into your application
   and configurd in plugins section in player config.
+
+## Iframe embed VS Dynamic embed
+
+The generated SEO structured data is either injected directly into the player 
+or communicated to the parent frame if the player is embedded within an iframe,
+
+In the latter, a supplementary code integration is required to be added on the parent frame (see [Customers Integration Guide](./docs/integration-guide.md))
+
+## The Generated JSONLD Data Structure
+
+the generated SEO data to be injected would look like this:
+
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "Nice Video clip",
+  "description": "",
+  "thumbnailUrl": "https://cfvod.kaltura.com/p/1887631/sp/1765100/thumbnail/entry_id/1_r62bdgz/version/100222/height/360/width/640",
+  "uploadDate": "2016-09-27T07:09:43+00:00",
+  "duration": "PDT00H12M21S",
+  "contentUrl": "https://cdnapisec.kaltura.com/p/4587/sp/479/playManifest/entryId/1_z63gj3gz/protocol/https/format/mpegdash/1_e4myapi8/a.mpd",
+  "expires": "2040-12-26T09:07:18+00:00",
+  "hasPart": [
+    {
+      "@type": "Clip",
+      "name": "chapter 1",
+      "startOffset": 0,
+      "endOffset": 24,
+      "url": "https://www.example.com/example?t=0"
+    },
+    {
+      "@type": "Clip",
+      "name": "chapter 2",
+      "startOffset": 24,
+      "endOffset": 700,
+      "url": "https://www.example.com/example?t=24.101"
+    }
+  ],
+  "transcript": "The grass is always greener on the other side of the fence..."
+}
+```
 
 ## Getting started with development
 
@@ -128,13 +171,17 @@ npm run test:watch
 
 An overview of this project's design, can be found [here](https://kaltura.atlassian.net/wiki/spaces/PROD/pages/3554412657/Side+Panel+Manager+-+Design+Document).
 
-## API docs
+## API Docs
 
 [API docs](https://kaltura.github.io/playkit-js-seo/docs/api/index.html)
 
-## Usage guide
+## Usage Guide (for Playkit Maintainers)
 
-[usage guide](./docs/guide.md)
+[Usage Guide](./docs/guide.md)
+
+## Customers Integration Guide
+
+[Customers Integration Guide](./docs/integration-guide.md)
 
 ## Demo
 
