@@ -4,7 +4,7 @@
 # SEO Technical Integration Guide
 
 > **Note:** This guide is intended for customers utilizing the player through iframe embeds. 
-> If you are using dynamic embeds, there is no action required apart from activating the plugin on the studio.
+> If you are using dynamic embeds, there is no action required apart from activating the plugin in the studio.
 
 
 Due to browser security policies, the player is constrained from directly manipulating or accessing elements in the parent frame. Its capability is limited to communication and data transmission to the parent frame. Therefore, a minor additional code implementation is necessary on your end to facilitate the integration of prepared structured data. This data should be injected into a script tag, as illustrated in the example below.

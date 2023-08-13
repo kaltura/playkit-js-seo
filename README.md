@@ -60,7 +60,7 @@ or communicated to the parent frame if the player is embedded within an iframe,
 
 In the latter, a supplementary code integration is required to be added on the parent frame (see [Customers Integration Guide](./docs/integration-guide.md))
 
-## The Generated JSONLD Data Structure
+## The Generated JSON-LD Data Structure
 
 the generated SEO data to be injected would look like this:
 
@@ -68,7 +68,7 @@ the generated SEO data to be injected would look like this:
 {
   "@context": "https://schema.org",
   "@type": "VideoObject",
-  "name": "Nice Video clip",
+  "name": "Nice Video Clip",
   "description": "",
   "thumbnailUrl": "https://cfvod.kaltura.com/p/1887631/sp/1765100/thumbnail/entry_id/1_r62bdgz/version/100222/height/360/width/640",
   "uploadDate": "2016-09-27T07:09:43+00:00",
