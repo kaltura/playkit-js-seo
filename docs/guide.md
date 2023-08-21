@@ -34,14 +34,22 @@ const player = KalturaPlayer.setup(config);
 
 ### Configuration
 
-You can see the **seo** full configuration options [here](https://kaltura.github.io/playkit-js-seo/docs/api/<PATH-TO-YOUR-CONFIGURATION-DOC-FILE>)
+> The configuration is required only in [Extra Data Mode](https://github.com/kaltura/playkit-js-seo/blob/master/README.md#extra-data-mode)
 
-You can find configuration example [here](https://github.com/kaltura/playkit-js-seo/tree/master/demo/index.html)
+- **baseSegmentsUrl:**  A URL that points to a specific segment(chapter) in the video corresponding to the time offset specified in the query parameter.
 
-## Full working example
+**The clip URL must point to the same URL path as the video!**
 
-You can find Full working example [here](https://github.com/kaltura/playkit-js-seo/tree/master/demo)
+For example, the following URL means the video starts at 2:00 minutes: `"https://www.example.com/example?t=120"`,
 
-## Demo
+So you need to supply: `'https://www.example.com/example?t='`
 
-[demo](https://kaltura.github.io/playkit-js-seo/demo/index.html)
+And the plugin would concatenate the startTime according the chapters' entry metadata (see example [here](https://github.com/kaltura/playkit-js-seo/blob/master/demo/canary/index.html#L29))
+
+## Full working code example
+
+You can find Full working example [here](https://github.com/kaltura/playkit-js-seo/tree/master/demo/canary/)
+
+## Live demo
+
+[demo](https://kaltura.github.io/playkit-js-seo/demo/canary/index.html)

@@ -11,7 +11,9 @@
     // Listen for messages from the iframe
     window.addEventListener('message', (event) => {
         if (event.data.type === 'SEOStructuredData') {
-            console.log(`Event ${event.data.type} fired in iframe:`, event);
+            console.log(`Event ${event.data.type} got in parent frame:`, event);
+
+
         }
     });
 </script>
