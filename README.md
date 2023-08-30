@@ -31,27 +31,29 @@ playkit-js-seo is written in [TypeScript] (`*.ts`) (strongly typed superset of E
 
 The plugin can be activated in two modes:
 
-### Basic Player Metadata (No Configuration Required)
+### Basic Mode
 In this mode, the SEO plugin will automatically generate structured data based on the basic video metadata, 
 including properties such as name, description, thumbnail URL, upload date, expiration date, and duration.
 
-- **This mode requires no additional configuration nor any additional dependency** and works out of the box.
+- **This mode requires no additional settings nor any additional dependency** and works out of the box.
 
-### Extra Data Mode
+### Enhanced Mode
 In this mode, the SEO plugin includes **Chapters** and **Transcript** properties in the structured data.
 **Chapters** enables key moments feature which is a way for users to navigate video segments like chapters in a book, 
 which can help users engage more deeply with your content. **Transcript** provides richer search results with relevant keywords
 This mode requires:
 
-- **baseSegmentsUrl configuration**. A URL that points to a specific segment(chapter) in the video corresponding to the time offset specified in the query parameter.
-   The clip URL must point to the same URL path as the video with additional query parameters that specify the time (see [here](https://github.com/kaltura/playkit-js-seo/blob/master/docs/guide.md#configuration) for more details).
-
-- Set the player's **'preload'** option in the playback config to **'auto'** (config.playback.preload = auto).
+- **'preload'** option must be set to **'auto'** in the playback config (config.playback.preload = auto).
 
 - **Cue Points Manager Dependency**: The plugin depends on the [Cue Points Manager plugin](https://github.com/kaltura/playkit-js-kaltura-cuepoints)
   to handle the cue points for chapters and transcript.
   Make sure the Cue Points Manager package is included and properly integrated into your application
-  and configurd in plugins section in player config.
+  and configured in plugins section in player config.
+
+in either case No Configuration Required
+
+**The Plugin will consistently and automatically strive to include the fullest range of available data (enhanced mode),
+contingent upon the presence of chapters and transcripts, and provided that the 'preload' mode is enabled.**
 
 ## Iframe embed VS Dynamic embed
 

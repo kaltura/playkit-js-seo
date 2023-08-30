@@ -7,10 +7,6 @@ export interface Chapter {
   description?: string;
 }
 
-export interface SEOConfig {
-  baseSegmentsUrl: string;
-}
-
 export enum GroupTypes {
   mid = 'mid',
   first = 'first',
