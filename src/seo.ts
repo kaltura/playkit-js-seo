@@ -1,19 +1,18 @@
 import { BasePlugin, KalturaPlayer } from '@playkit-js/kaltura-player-js';
 import { convertDurationToISO8601, convertUnixTimestampToISO8601 } from './date-formaters';
 import type { Clip, VideoObject, WithContext } from 'schema-dts';
-import { Chapter, CuePoint, SEOConfig, TimedMetadataEvent } from './types';
+import { Chapter, CuePoint, TimedMetadataEvent } from './types';
 
 export const PLUGIN_NAME = 'seo';
 const SEO_SCRIPT_ID = `${location.hostname}k-player-seo`;
 
-export class Seo extends BasePlugin<SEOConfig> {
-  protected static defaultConfig: SEOConfig;
+export class Seo extends BasePlugin<Record<string, never>> {
   private chaptersData?: Chapter[];
   private transcriptData?: string;
   private timedDataReadyPromise: Promise<void>;
   private resolveTimedDataReadyPromise!: () => void;
 
-  constructor(name: string, player: KalturaPlayer, config?: SEOConfig) {
+  constructor(name: string, player: KalturaPlayer, config?: Record<string, never>) {
     super(name, player, config);
     this.eventManager.listenOnce(this.player, this.player.Event.Core.CHANGE_SOURCE_ENDED, async () => this.handleSEO());
     this.timedDataReadyPromise = new Promise((resolve) => {
@@ -71,7 +70,7 @@ export class Seo extends BasePlugin<SEOConfig> {
     const scriptTag = document.getElementById(SEO_SCRIPT_ID);
     if (scriptTag) {
       const data = JSON.parse(scriptTag.textContent!);
-      if (this.chaptersData?.length && this.config.baseSegmentsUrl) {
+      if (this.chaptersData?.length) {
         data.hasPart = this.getClips();
       }
       data.transcript = this.transcriptData;
@@ -86,7 +85,7 @@ export class Seo extends BasePlugin<SEOConfig> {
         name: chapter.name,
         startOffset: chapter.startTime,
         endOffset: chapter.endTime,
-        url: `${this.config.baseSegmentsUrl}${chapter.startTime}`,
+        url: Seo.concatenateStartTimeQueryParam(window.location.href, 'kalturaStartTime', chapter.startTime),
         ...(chapter.description && { description: chapter.description })
       };
     });
@@ -94,6 +93,19 @@ export class Seo extends BasePlugin<SEOConfig> {
 
   private static sendSEOStructuredData(SEOStructuredData: WithContext<VideoObject>): void {
     window.parent.postMessage({ type: 'SEOStructuredData', SEOStructuredData }, '*');
+  }
+
+  private static concatenateStartTimeQueryParam(url: string, newParamName: string, newParamValue: number): string {
+    const encodedParamValue = encodeURIComponent(newParamValue);
+    const separator = url.includes('?') ? '&' : '?';
+    const fragmentIndex = url.indexOf('#');
+    let newURL;
+    if (fragmentIndex !== -1) {
+      newURL = url.slice(0, fragmentIndex) + separator + newParamName + '=' + encodedParamValue + url.slice(fragmentIndex);
+    } else {
+      newURL = url + separator + newParamName + '=' + encodedParamValue;
+    }
+    return newURL;
   }
 
   private hasStructuredDataRequiredProperties(): boolean {

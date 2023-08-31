@@ -11,7 +11,7 @@ Due to browser security policies, the player is constrained from directly manipu
 
 To enable the SEO plugin, follow these two essential steps:
 
-1. Activate the SEO plugin within the studio. (and supply the required configuration if you select extra data mode)
+1. Activate the SEO plugin within the studio.
 2. Implement an injection within the parent frame.
 
 
@@ -31,6 +31,6 @@ To enable the SEO plugin, follow these two essential steps:
     });
 </script>
 ```
-all you need to do , is copy this code snipt inot your `<head>` tag element.
+all you need to do , is copy this code snippet into your `<head>` tag element.
 
 By completing these steps, you'll ensure the proper integration and functioning of the SEO plugin and its benefits for your embedded content.
