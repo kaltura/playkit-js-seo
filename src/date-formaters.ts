@@ -38,7 +38,7 @@ export function convertDurationToISO8601(durationInSeconds: number): string {
 /**
  * @public
  * @param {string} unixTimestamp - date in Unix timestamp format
- * @return {string} - The evaluated string in ISO 8601 format without the UTC offset
+ * @return {string} - The evaluated string in ISO 8601 format without the UTC offset.
  */
 export function convertUnixTimestampToISO8601(unixTimestamp: number): string {
   const milliseconds = unixTimestamp * 1000;
