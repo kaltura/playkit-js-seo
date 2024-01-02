@@ -9,10 +9,29 @@ export function convertDurationToISO8601(durationInSeconds: number): string {
   const hours = Math.floor((durationInSeconds / (60 * 60)) % 24);
   const days = Math.floor(durationInSeconds / (60 * 60 * 24));
 
-  const paddedHours = hours.toString().padStart(2, '0');
-  const paddedMinutes = minutes.toString().padStart(2, '0');
+  let isoDuration = 'P';
 
-  const isoDuration = `P${days || ''}DT${paddedHours}H${paddedMinutes}M${seconds}S`;
+  if (days > 0) {
+    isoDuration += `${days}D`;
+  }
+
+  if (hours > 0 || minutes > 0 || seconds > 0) {
+    isoDuration += 'T';
+  }
+
+  if (hours > 0) {
+    isoDuration += `${hours}H`;
+  }
+
+  if (minutes > 0) {
+    isoDuration += `${minutes}M`;
+  }
+
+  if (seconds > 0 || (hours === 0 && minutes === 0 && days === 0)) {
+    // Always include seconds, even if 0, unless there are higher units
+    isoDuration += `${seconds}S`;
+  }
+
   return isoDuration;
 }
 
