@@ -6,7 +6,6 @@
     "preserveSymlinks": true,
     "jsx": "react",
     "jsxFactory": "h",
-    "skipLibCheck": true,
     "jsxFragmentFactory": "Fragment",
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
