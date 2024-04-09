@@ -1,6 +1,6 @@
 {
   "name": "@playkit-js/seo",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "",
   "main": "dist/playkit-ui-manager.js",
   "types": "types/index.d.ts",
