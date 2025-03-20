@@ -100,7 +100,7 @@
   "kaltura": {
     "name": "seo",
     "dependencies": {
-      "playkit-kaltura-cuepoints": "3.0.18"
+      "playkit-kaltura-cuepoints": "3.0.19"
     }
   }
 }
