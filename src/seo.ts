@@ -152,7 +152,7 @@ export class Seo extends BasePlugin<Record<string, never>> {
       this.chaptersData = Seo.extractUnisphereChaptersData(payload.chapters);
       this.transcriptData = undefined;
 
-      if(this.cuesSource === CueSourceNames.TimedMetadata) {
+      if (this.cuesSource === CueSourceNames.TimedMetadata) {
         this.updateStructureDataWithTimeData();
       } else {
         this.resolveTimedDataReadyPromise();
