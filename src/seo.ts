@@ -175,9 +175,8 @@ export class Seo extends BasePlugin<Record<string, never>> {
         captionData.push(cue);
       }
     });
-    if (chapterData.length && this.cuesSource !== CueSourceNames.Unisphere) {
+    if (chapterData.length && this.cuesSource === CueSourceNames.None) {
       this.chaptersData = Seo.extractRelevantChaptersData(chapterData);
-      this.cuesSource = CueSourceNames.TimedMetadata;
     }
     if (captionData.length) {
       this.transcriptData = Seo.generateTranscriptFromCuePoints(captionData);
@@ -185,6 +184,7 @@ export class Seo extends BasePlugin<Record<string, never>> {
         this.updateStructureDataWithTimeData();
       } else {
         this.resolveTimedDataReadyPromise();
+        this.cuesSource = CueSourceNames.TimedMetadata;
       }
     }
   }
