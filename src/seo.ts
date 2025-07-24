@@ -199,12 +199,15 @@ export class Seo extends BasePlugin<Record<string, never>> {
   }
 
   private static extractUnisphereChaptersData(chapterData: UnisphereCuePoint[]): Chapter[] {
-    return chapterData.map(({ startTime, endTime, description, title }) => ({
-      startTime: +startTime,
-      endTime: endTime ? +endTime : undefined,
-      name: title,
-      description
-    }));
+    return chapterData.map(({ startTime, description, title }, index) => {
+      const endTime = chapterData[index + 1] ? chapterData[index + 1].startTime : this.player.sources.duration;
+      return {
+        startTime: +startTime,
+        endTime: +endTime,
+        name: title,
+        description
+      };
+    });
   }
 
   private static generateTranscriptFromCuePoints(cuePointsArray: CuePoint[]): string {
