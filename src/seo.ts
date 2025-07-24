@@ -150,7 +150,6 @@ export class Seo extends BasePlugin<Record<string, never>> {
   private onUnisphereDataAdded({ payload }: UnisphereDataEvent): void {
     if (payload.chapters.length) {
       this.chaptersData = Seo.extractUnisphereChaptersData(payload.chapters);
-      this.transcriptData = undefined;
 
       if (this.cuesSource === CueSourceNames.TimedMetadata) {
         this.updateStructureDataWithTimeData();
@@ -176,11 +175,20 @@ export class Seo extends BasePlugin<Record<string, never>> {
         captionData.push(cue);
       }
     });
+
     if (chapterData.length && this.cuesSource !== CueSourceNames.Unisphere) {
       this.chaptersData = Seo.extractRelevantChaptersData(chapterData);
-      this.transcriptData = Seo.generateTranscriptFromCuePoints(captionData);
-      this.resolveTimedDataReadyPromise();
       this.cuesSource = CueSourceNames.TimedMetadata;
+    }
+
+    if (captionData.length) {
+      this.transcriptData = Seo.generateTranscriptFromCuePoints(captionData);
+
+      if (this.cuesSource === CueSourceNames.Unisphere) {
+        this.updateStructureDataWithTimeData();
+      } else {
+        this.resolveTimedDataReadyPromise();
+      }
     }
   }
 
