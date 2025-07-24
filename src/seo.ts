@@ -175,15 +175,12 @@ export class Seo extends BasePlugin<Record<string, never>> {
         captionData.push(cue);
       }
     });
-
     if (chapterData.length && this.cuesSource !== CueSourceNames.Unisphere) {
       this.chaptersData = Seo.extractRelevantChaptersData(chapterData);
       this.cuesSource = CueSourceNames.TimedMetadata;
     }
-
     if (captionData.length) {
       this.transcriptData = Seo.generateTranscriptFromCuePoints(captionData);
-
       if (this.cuesSource === CueSourceNames.Unisphere) {
         this.updateStructureDataWithTimeData();
       } else {
