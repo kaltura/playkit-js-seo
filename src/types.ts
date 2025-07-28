@@ -22,6 +22,13 @@ export interface CuePoint {
   text?: string;
 }
 
+export interface UnisphereCuePoint {
+  startTime: string;
+  endTime?: string;
+  description?: string;
+  title?: string;
+}
+
 export enum ItemTypes {
   All = 'All',
   AnswerOnAir = 'AnswerOnAir',
@@ -68,5 +75,11 @@ export interface ItemData extends RawItemData {
 export interface TimedMetadataEvent {
   payload: {
     cues: CuePoint[];
+  };
+}
+
+export interface UnisphereDataEvent {
+  payload: {
+    chapters: UnisphereCuePoint[];
   };
 }

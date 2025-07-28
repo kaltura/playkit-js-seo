@@ -1,16 +1,24 @@
 import { BasePlugin, KalturaPlayer } from '@playkit-js/kaltura-player-js';
 import { convertDurationToISO8601, convertUnixTimestampToISO8601 } from './date-formaters';
 import type { Clip, VideoObject, WithContext } from 'schema-dts';
-import { Chapter, CuePoint, TimedMetadataEvent } from './types';
+import { Chapter, CuePoint, TimedMetadataEvent, UnisphereCuePoint, UnisphereDataEvent } from './types';
 
 export const PLUGIN_NAME = 'seo';
 const SEO_SCRIPT_ID = `${location.hostname}k-player-seo`;
+enum CueSourceNames {
+  None = 'none',
+  TimedMetadata = 'timedMetadata',
+  Unisphere = 'unisphere'
+}
 
 export class Seo extends BasePlugin<Record<string, never>> {
   private chaptersData?: Chapter[];
   private transcriptData?: string;
   private timedDataReadyPromise: Promise<void>;
   private resolveTimedDataReadyPromise!: () => void;
+  // Used to determine where to take chapters data from
+  // Unisphere chapters have precedence over cuepoint chapters
+  private cuesSource: CueSourceNames = CueSourceNames.None;
 
   constructor(name: string, player: KalturaPlayer, config?: Record<string, never>) {
     super(name, player, config);
@@ -26,6 +34,7 @@ export class Seo extends BasePlugin<Record<string, never>> {
       return;
     }
     this.eventManager.listen(this.player, this.player.Event.Core.TIMED_METADATA_ADDED, (e) => this.onTimedMetadataAdded(e));
+    this.eventManager.listen(this.player, 'UNISPHERE_CHAPTERS_ADDED', (e) => this.onUnisphereDataAdded(e));
     this.registerCuePointTypes();
   }
 
@@ -140,6 +149,20 @@ export class Seo extends BasePlugin<Record<string, never>> {
     this.cuePointManager.registerTypes([this.cuePointManager.CuepointType.CHAPTER, this.cuePointManager.CuepointType.CAPTION]);
   }
 
+  private onUnisphereDataAdded({ payload }: UnisphereDataEvent): void {
+    if (payload.chapters.length) {
+      this.chaptersData = this.extractUnisphereChaptersData(payload.chapters);
+
+      if (this.cuesSource === CueSourceNames.TimedMetadata) {
+        this.updateStructureDataWithTimeData();
+      } else {
+        this.resolveTimedDataReadyPromise();
+      }
+
+      this.cuesSource = CueSourceNames.Unisphere;
+    }
+  }
+
   private onTimedMetadataAdded({ payload }: TimedMetadataEvent): void {
     const { KalturaCuePointType, KalturaThumbCuePointSubType } = this.cuePointManager;
     const chapterData: CuePoint[] = [];
@@ -154,12 +177,17 @@ export class Seo extends BasePlugin<Record<string, never>> {
         captionData.push(cue);
       }
     });
-    if (chapterData.length) {
+    if (chapterData.length && this.cuesSource === CueSourceNames.None) {
       this.chaptersData = Seo.extractRelevantChaptersData(chapterData);
     }
     if (captionData.length) {
       this.transcriptData = Seo.generateTranscriptFromCuePoints(captionData);
-      this.resolveTimedDataReadyPromise();
+      if (this.cuesSource === CueSourceNames.Unisphere) {
+        this.updateStructureDataWithTimeData();
+      } else {
+        this.resolveTimedDataReadyPromise();
+        this.cuesSource = CueSourceNames.TimedMetadata;
+      }
     }
   }
 
@@ -170,6 +198,18 @@ export class Seo extends BasePlugin<Record<string, never>> {
       name: metadata.title,
       description: metadata.description
     }));
+  }
+
+  private extractUnisphereChaptersData(chapterData: UnisphereCuePoint[]): Chapter[] {
+    return chapterData.map(({ startTime, description, title }, index) => {
+      const endTime = chapterData[index + 1] ? chapterData[index + 1].startTime : this.player?.sources.duration;
+      return {
+        startTime: +startTime,
+        endTime: +(endTime || 0),
+        name: title,
+        description
+      };
+    });
   }
 
   private static generateTranscriptFromCuePoints(cuePointsArray: CuePoint[]): string {
