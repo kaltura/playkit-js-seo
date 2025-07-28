@@ -17,7 +17,7 @@ export class Seo extends BasePlugin<Record<string, never>> {
   private timedDataReadyPromise: Promise<void>;
   private resolveTimedDataReadyPromise!: () => void;
   // Used to determine where to take chapters data from
-  // Inisphere chapters have precedence over cuepoint chapters
+  // Unisphere chapters have precedence over cuepoint chapters
   private cuesSource: CueSourceNames = CueSourceNames.None;
 
   constructor(name: string, player: KalturaPlayer, config?: Record<string, never>) {
