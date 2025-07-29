@@ -33,8 +33,17 @@
       };
 
       const player = KalturaPlayer.setup(config);
-      player.loadMedia({ entryId: '1_9ryo69ae' });
-    </script>
+      //player.loadMedia({ entryId: '1_9ryo69ae' });
+      player.setMedia({
+       sources: {
+            progressive: [
+                {
+                    mimetype: "video/mp4",
+                    url: "http://cdnapi.kaltura.com/p/6316603/sp/6316603/playManifest/entryId/1_9ryo69ae/flavorIds/1_2fh8nho0,1_ylxeesny,1_fe0pjvvg,1_jor5ukic,1_7vzuw8ml,1_pufttzvp/deliveryProfileId/72/protocol/http/format/url/name/a.mp4"
+                }
+            ]
+        }});
+      </script>
     <a href="./parent.html">Parent(host) >>>></a>
   </body>
 </html>
