@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SEO Plugin</title>
+        <script src="https://unpkg.com/@playkit-js/kaltura-player-js@canary/dist/kaltura-ovp-player.js"></script>
+        <script src="https://unpkg.com/@playkit-js/playkit-js-kaltura-cuepoints@canary/dist/playkit-kaltura-cuepoints.js"></script>
+        <script src="https://unpkg.com/@playkit-js/seo@latest/dist/playkit-seo.js"></script>
+  </head>
+  <body>
+    <h1>Child(Player) Page</h1>
+    <div id="player-placeholder" style="width: 640px; height: 360px"></div>
+    <script>
+      const config = {
+        logLevel: 'DEBUG',
+        targetId: 'player-placeholder',
+        provider: {
+          partnerId: 6316603,
+          env: {
+            serviceUrl: 'https://cdnapisec.kaltura.com/api_v3'
+          }
+        },
+        playback: {
+          // In real scenario - preload mode should be automatically activated in studio
+          preload: 'auto'
+        },
+        plugins: {
+          seo: {},
+          kalturaCuepoints: {}
+        }
+      };
+
+      const player = KalturaPlayer.setup(config);
+      player.loadMedia({ entryId: '1_9ryo69ae' });
+    </script>
+    <a href="./parent.html">Parent(host) >>>></a>
+  </body>
+</html>
