@@ -58,20 +58,37 @@ export class Seo extends BasePlugin<Record<string, never>> {
   }
 
   private getSEOStructuredData(): WithContext<VideoObject> {
+    // Handle both sources.metadata and entryMeta structures
+    const metadata = this.player.sources?.metadata || {};
+    const entryMeta = (this.player as any).config?.entryMeta || {};
+    
+    const name = metadata.name || entryMeta.name;
+    const description = metadata.description || entryMeta.description;
+    const thumbnailUrl = this.player.sources?.poster || entryMeta.thumbnailUrl;
+    const duration = this.player.sources?.duration || entryMeta.duration;
+    const uploadDate = metadata.createdAt || entryMeta.createdAt || entryMeta.uploadDate;
+    const endDate = metadata.endDate || entryMeta.endDate;
+    
     const VideoStructuredData: WithContext<VideoObject> = {
       '@context': 'https://schema.org',
       '@type': 'VideoObject',
-      name: this.player.sources.metadata.name,
-      description: this.player.sources.metadata.description,
-      thumbnailUrl: this.player.sources.poster,
-      uploadDate: convertUnixTimestampToISO8601(this.player.sources.metadata.createdAt!),
-      duration: convertDurationToISO8601(this.player.sources.duration!),
-      contentUrl: this.player.selectedSource.url
+      name,
+      description,
+      thumbnailUrl,
+      duration: convertDurationToISO8601(duration!),
+      contentUrl: this.player.selectedSource?.url
     };
 
-    if (this.player.sources.metadata.endDate) {
-      VideoStructuredData.expires = convertUnixTimestampToISO8601(this.player.sources.metadata.endDate);
+    // Add upload date if available
+    if (uploadDate) {
+      VideoStructuredData.uploadDate = convertUnixTimestampToISO8601(uploadDate);
     }
+
+    // Add expiration date if available
+    if (endDate) {
+      VideoStructuredData.expires = convertUnixTimestampToISO8601(endDate);
+    }
+    
     return VideoStructuredData;
   }
 
@@ -118,10 +135,16 @@ export class Seo extends BasePlugin<Record<string, never>> {
   }
 
   private hasStructuredDataRequiredProperties(): boolean {
-    const name = this.player.sources.metadata.name;
-    const thumbnailUrl = this.player.sources.poster;
-    const uploadDate = this.player.sources.metadata.createdAt;
-    return !!(name && thumbnailUrl && uploadDate);
+    // Handle both sources.metadata and entryMeta structures
+    const metadata = this.player.sources?.metadata || {};
+    const entryMeta = (this.player as any).config?.entryMeta || {};
+    
+    const name = metadata.name || entryMeta.name;
+    const thumbnailUrl = this.player.sources?.poster || entryMeta.thumbnailUrl;
+    const uploadDate = metadata.createdAt || entryMeta.createdAt || entryMeta.uploadDate;
+    
+    this.logger.debug('SEO metadata validation:', { name, thumbnailUrl, uploadDate });
+    return !!(name && thumbnailUrl);
   }
 
   private static isPlayerIframeEmbeded(): boolean {
