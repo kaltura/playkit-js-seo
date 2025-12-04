@@ -1,5 +1,15 @@
 import { VNode } from 'preact';
 
+export interface EntryMeta {
+  name?: string;
+  description?: string;
+  thumbnailUrl?: string;
+  duration?: number;
+  createdAt?: number;
+  uploadDate?: string;
+  endDate?: number;
+}
+
 export interface Chapter {
   startTime: number;
   endTime?: number;
