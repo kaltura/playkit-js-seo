@@ -23,6 +23,7 @@
   "scripts": {
     "preinstall": "npx --yes --prefer-online --registry=https://npm.pkg.github.com --package @kaltura/kaltura-tools@latest kaltura-tools check --root=.",
     "dev": "npm run build:dev && webpack serve --open --mode development",
+    "canary": "npm run build:dev && DEMO_DIR=demo/canary webpack serve --open --mode development",
     "build:dev": "webpack --mode development",
     "build:prod": "webpack --mode production",
     "build": "webpack --mode production",
