@@ -242,8 +242,8 @@ export class Seo extends BasePlugin<Record<string, never>> {
     return chapterData.map(({ time, description, title }, index) => {
       const endTime = chapterData[index + 1] ? chapterData[index + 1].time : this.player?.sources.duration;
       return {
-        startTime: +time,
-        endTime: +(endTime || 0),
+        startTime: Number((+time).toFixed(3)),
+        endTime: Number((+(endTime || 0)).toFixed(3)),
         name: title,
         description
       };
