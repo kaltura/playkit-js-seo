@@ -33,7 +33,7 @@ export interface CuePoint {
 }
 
 export interface UnisphereCuePoint {
-  startTime: string;
+  time: number;
   endTime?: string;
   description?: string;
   title?: string;
@@ -90,6 +90,7 @@ export interface TimedMetadataEvent {
 
 export interface UnisphereDataEvent {
   payload: {
+    summary: string;
     chapters: UnisphereCuePoint[];
   };
 }

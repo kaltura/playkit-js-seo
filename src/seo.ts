@@ -2,6 +2,7 @@ import { BasePlugin, KalturaPlayer } from '@playkit-js/kaltura-player-js';
 import { convertDurationToISO8601, convertUnixTimestampToISO8601 } from './date-formaters';
 import type { Clip, VideoObject, WithContext } from 'schema-dts';
 import { Chapter, CuePoint, TimedMetadataEvent, UnisphereCuePoint, UnisphereDataEvent, EntryMeta } from './types';
+import { PlayerEvent } from '../types/player-event';
 
 export const PLUGIN_NAME = 'seo';
 const SEO_SCRIPT_ID = `${location.hostname}k-player-seo`;
@@ -12,6 +13,7 @@ enum CueSourceNames {
 }
 
 export class Seo extends BasePlugin<Record<string, never>> {
+  private summaryData?: string;
   private chaptersData?: Chapter[];
   private transcriptData?: string;
   private timedDataReadyPromise: Promise<void>;
@@ -34,7 +36,7 @@ export class Seo extends BasePlugin<Record<string, never>> {
       return;
     }
     this.eventManager.listen(this.player, this.player.Event.Core.TIMED_METADATA_ADDED, (e) => this.onTimedMetadataAdded(e));
-    this.eventManager.listen(this.player, 'UNISPHERE_CHAPTERS_ADDED', (e) => this.onUnisphereDataAdded(e));
+    this.eventManager.listen(this.player, PlayerEvent.UNISPHERE_CHAPTERS_ADDED, (e) => this.onUnisphereDataAdded(e));
     this.registerCuePointTypes();
   }
 
@@ -97,10 +99,16 @@ export class Seo extends BasePlugin<Record<string, never>> {
     const scriptTag = document.getElementById(SEO_SCRIPT_ID);
     if (scriptTag) {
       const data = JSON.parse(scriptTag.textContent!);
+
+      if (this.summaryData) {
+        data.abstract = this.summaryData;
+      }
+
       if (this.chaptersData?.length) {
         data.hasPart = this.getClips();
       }
       data.transcript = this.transcriptData;
+
       scriptTag.textContent = JSON.stringify(data);
     }
   }
@@ -174,6 +182,10 @@ export class Seo extends BasePlugin<Record<string, never>> {
   }
 
   private onUnisphereDataAdded({ payload }: UnisphereDataEvent): void {
+    if (payload.summary) {
+      this.summaryData = payload.summary;
+    }
+
     if (payload.chapters.length) {
       this.chaptersData = this.extractUnisphereChaptersData(payload.chapters);
 
@@ -181,6 +193,8 @@ export class Seo extends BasePlugin<Record<string, never>> {
         this.updateStructureDataWithTimeData();
       } else {
         this.resolveTimedDataReadyPromise();
+        // Update structure data immediately for Unisphere-only scenarios
+        this.updateStructureDataWithTimeData();
       }
 
       this.cuesSource = CueSourceNames.Unisphere;
@@ -225,10 +239,10 @@ export class Seo extends BasePlugin<Record<string, never>> {
   }
 
   private extractUnisphereChaptersData(chapterData: UnisphereCuePoint[]): Chapter[] {
-    return chapterData.map(({ startTime, description, title }, index) => {
-      const endTime = chapterData[index + 1] ? chapterData[index + 1].startTime : this.player?.sources.duration;
+    return chapterData.map(({ time, description, title }, index) => {
+      const endTime = chapterData[index + 1] ? chapterData[index + 1].time : this.player?.sources.duration;
       return {
-        startTime: +startTime,
+        startTime: +time,
         endTime: +(endTime || 0),
         name: title,
         description
