@@ -215,14 +215,12 @@ export class Seo extends BasePlugin<Record<string, never>> {
         captionData.push(cue);
       }
     });
-    if (chapterData.length && this.cuesSource !== CueSourceNames.Unisphere) {
+    if (chapterData.length && this.cuesSource === CueSourceNames.None) {
       this.chaptersData = Seo.extractRelevantChaptersData(chapterData);
-      if (this.cuesSource === CueSourceNames.None) {
-        this.cuesSource = CueSourceNames.TimedMetadata;
-        // if no captions are expected - resolve the promise to allow SEO data update
-        if (!captionData.length) {
-          this.resolveTimedDataReadyPromise();
-        }
+      this.cuesSource = CueSourceNames.TimedMetadata;
+      // if no captions are expected - resolve the promise to allow SEO data update
+      if (!captionData.length) {
+        this.resolveTimedDataReadyPromise();
       }
     }
     if (captionData.length) {
