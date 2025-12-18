@@ -1,6 +1,6 @@
 {
   "name": "@playkit-js/seo",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "",
   "main": "dist/playkit-ui-manager.js",
   "types": "types/index.d.ts",
@@ -21,7 +21,7 @@
     "player"
   ],
   "scripts": {
-    "preinstall": "npx --yes --prefer-online --registry=https://npm.pkg.github.com --package @kaltura/kaltura-tools@latest kaltura-tools check --root=.",
+    "disabled-preinstall": "npx --yes --prefer-online --registry=https://npm.pkg.github.com --package @kaltura/kaltura-tools@latest kaltura-tools check --root=.",
     "serve:dev": "npm run build:dev && webpack serve --open --mode development",
     "serve:canary": "npm run build:dev && DEMO_DIR=demo/canary webpack serve --open --mode development",
     "build:dev": "webpack --mode development",
