@@ -3,6 +3,7 @@ import { VNode } from 'preact';
 export interface EntryMeta {
   name?: string;
   description?: string;
+  tags?: string | object;
   thumbnailUrl?: string;
   duration?: number;
   createdAt?: number;

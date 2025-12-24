@@ -7,7 +7,7 @@
     <title>SEO Plugin</title>
         <script src="https://unpkg.com/@playkit-js/kaltura-player-js@canary/dist/kaltura-ovp-player.js"></script>
         <script src="https://unpkg.com/@playkit-js/playkit-js-kaltura-cuepoints@canary/dist/playkit-kaltura-cuepoints.js"></script>
-        <script src="https://unpkg.com/@playkit-js/seo@canary/dist/playkit-seo.js"></script>
+    <script src="../../playkit-seo.js"></script>
   </head>
   <body>
     <h1>Child(Player) Page</h1>
@@ -17,9 +17,9 @@
         logLevel: 'DEBUG',
         targetId: 'player-placeholder',
         provider: {
-          partnerId: 1915851,
+          partnerId: 242,
           env: {
-            serviceUrl: 'https://cdnapisec.kaltura.com/api_v3'
+            serviceUrl: 'https://api.nvq2.ovp.kaltura.com/api_v3'
           }
         },
         playback: {
@@ -33,7 +33,7 @@
       };
 
       const player = KalturaPlayer.setup(config);
-      player.loadMedia({ entryId: '1_0707g6fo' });
+      player.loadMedia({ entryId: '0_jdctx5iz' });
     </script>
     <a href="./parent.html">Parent(host) >>>></a>
   </body>
