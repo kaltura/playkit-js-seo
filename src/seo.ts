@@ -77,7 +77,7 @@ export class Seo extends BasePlugin<Record<string, never>> {
       '@type': 'VideoObject',
       name,
       description,
-      keywords: this.formatTagsForKeywords(tags),
+      keywords: tags,
       thumbnailUrl,
       duration: convertDurationToISO8601(duration!),
       contentUrl: this.player.selectedSource?.url
@@ -259,27 +259,5 @@ export class Seo extends BasePlugin<Record<string, never>> {
 
   private static generateTranscriptFromCuePoints(cuePointsArray: CuePoint[]): string {
     return cuePointsArray.reduce((transcript, cuePoint) => `${transcript} ${cuePoint.metadata.text}`, '').trim();
-  }
-
-  private formatTagsForKeywords(tags: string | object | undefined): string | undefined {
-    if (!tags) {
-      return undefined;
-    }
-
-    if (typeof tags === 'string') {
-      return tags;
-    }
-
-    if (Array.isArray(tags)) {
-      if (tags.length > 0 && typeof tags[0] === 'object' && tags[0] !== null) {
-        return tags
-          .map((tag) => tag.value)
-          .filter(Boolean)
-          .join(', ');
-      }
-    }
-
-    // if no meaningful tags - return undefined
-    return undefined;
   }
 }
