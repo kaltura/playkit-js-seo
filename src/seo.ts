@@ -64,8 +64,9 @@ export class Seo extends BasePlugin<Record<string, never>> {
     const metadata = this.player.sources?.metadata || {};
     const entryMeta: EntryMeta = (this.player as KalturaPlayer & { config?: { entryMeta?: EntryMeta } }).config?.entryMeta || {};
 
-    const name = metadata.name || entryMeta.name;
-    const description = metadata.description || entryMeta.description;
+    const name = metadata.multiLingualName || entryMeta.multiLingualName;
+    const description = metadata.multiLingualDescription || entryMeta.multiLingualDescription;
+    const tags = metadata.multiLingualTags || entryMeta.multiLingualTags;
     const thumbnailUrl = this.player.sources?.poster || entryMeta.thumbnailUrl;
     const duration = this.player.sources?.duration || entryMeta.duration;
     const uploadDate = metadata.createdAt || entryMeta.createdAt || entryMeta.uploadDate;
@@ -76,6 +77,7 @@ export class Seo extends BasePlugin<Record<string, never>> {
       '@type': 'VideoObject',
       name,
       description,
+      keywords: tags,
       thumbnailUrl,
       duration: convertDurationToISO8601(duration!),
       contentUrl: this.player.selectedSource?.url

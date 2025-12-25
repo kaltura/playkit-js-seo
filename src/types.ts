@@ -3,11 +3,15 @@ import { VNode } from 'preact';
 export interface EntryMeta {
   name?: string;
   description?: string;
+  tags?: string;
   thumbnailUrl?: string;
   duration?: number;
   createdAt?: number;
   uploadDate?: string;
   endDate?: number;
+  multiLingualName?: string | Array<any>;
+  multiLingualDescription?: string | Array<any>;
+  multiLingualTags?: string | Array<any>;
 }
 
 export interface Chapter {
