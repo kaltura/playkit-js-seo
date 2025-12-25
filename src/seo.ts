@@ -64,8 +64,8 @@ export class Seo extends BasePlugin<Record<string, never>> {
     const metadata = this.player.sources?.metadata || {};
     const entryMeta: EntryMeta = (this.player as KalturaPlayer & { config?: { entryMeta?: EntryMeta } }).config?.entryMeta || {};
 
-    const name = metadata.name || entryMeta.name;
-    const description = metadata.description || entryMeta.description;
+    const name = metadata.multiLingualName || entryMeta.multiLingualName;
+    const description = metadata.multiLingualDescription || entryMeta.multiLingualDescription;
     const tags = metadata.tags || entryMeta.tags;
     const thumbnailUrl = this.player.sources?.poster || entryMeta.thumbnailUrl;
     const duration = this.player.sources?.duration || entryMeta.duration;

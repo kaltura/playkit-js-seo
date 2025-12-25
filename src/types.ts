@@ -9,6 +9,8 @@ export interface EntryMeta {
   createdAt?: number;
   uploadDate?: string;
   endDate?: number;
+  multiLingualName?: string | Array<any>;
+  multiLingualDescription?: string | Array<any>;
 }
 
 export interface Chapter {
