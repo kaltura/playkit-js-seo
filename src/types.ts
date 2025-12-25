@@ -11,6 +11,7 @@ export interface EntryMeta {
   endDate?: number;
   multiLingualName?: string | Array<any>;
   multiLingualDescription?: string | Array<any>;
+  multiLingualTags?: string | Array<any>;
 }
 
 export interface Chapter {

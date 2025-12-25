@@ -66,7 +66,7 @@ export class Seo extends BasePlugin<Record<string, never>> {
 
     const name = metadata.multiLingualName || entryMeta.multiLingualName;
     const description = metadata.multiLingualDescription || entryMeta.multiLingualDescription;
-    const tags = metadata.tags || entryMeta.tags;
+    const tags = metadata.multiLingualTags || entryMeta.multiLingualTags;
     const thumbnailUrl = this.player.sources?.poster || entryMeta.thumbnailUrl;
     const duration = this.player.sources?.duration || entryMeta.duration;
     const uploadDate = metadata.createdAt || entryMeta.createdAt || entryMeta.uploadDate;
