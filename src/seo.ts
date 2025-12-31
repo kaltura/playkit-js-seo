@@ -3,6 +3,7 @@ import { convertDurationToISO8601, convertUnixTimestampToISO8601 } from './date-
 import type { Clip, VideoObject, WithContext } from 'schema-dts';
 import { Chapter, CuePoint, TimedMetadataEvent, UnisphereCuePoint, UnisphereDataEvent, EntryMeta } from './types';
 import { PlayerEvent } from '../types/player-event';
+import { SeoLoader } from './seo-loader';
 
 export const PLUGIN_NAME = 'seo';
 const SEO_SCRIPT_ID = `${location.hostname}k-player-seo`;
@@ -42,7 +43,7 @@ export class Seo extends BasePlugin<Record<string, never>> {
 
   private async handleSEO(): Promise<void> {
     if (this.hasStructuredDataRequiredProperties()) {
-      const SEOStructuredData: WithContext<VideoObject> = this.getSEOStructuredData();
+      const SEOStructuredData: WithContext<VideoObject> = await this.getSEOStructuredData();
       if (Seo.isPlayerIframeEmbeded()) {
         Seo.sendSEOStructuredData(SEOStructuredData);
       } else if (this.isNotInjectedYet()) {
@@ -59,13 +60,22 @@ export class Seo extends BasePlugin<Record<string, never>> {
     return !document.getElementById(SEO_SCRIPT_ID);
   }
 
-  private getSEOStructuredData(): WithContext<VideoObject> {
+  private async getSEOStructuredData(): Promise<WithContext<VideoObject>> {
     // Handle both sources.metadata and entryMeta structures
     const metadata = this.player.sources?.metadata || {};
     const entryMeta: EntryMeta = (this.player as KalturaPlayer & { config?: { entryMeta?: EntryMeta } }).config?.entryMeta || {};
 
-    const name = metadata.name || entryMeta.name;
-    const description = metadata.description || entryMeta.description;
+    // getSeoProperties call for multilingual support
+    const entryId = this.player.sources?.id || '';
+    let response = {};
+    if (entryId) {
+      response = (await this.getSeoProperties(entryId)) || {};
+    }
+    const seoProps = response as { name?: string; description?: string; tags?: string };
+
+    const name = seoProps.name || metadata.name || entryMeta.name;
+    const description = seoProps.description || metadata.description || entryMeta.description;
+    const tags = seoProps.tags || metadata.tags || entryMeta.tags;
     const thumbnailUrl = this.player.sources?.poster || entryMeta.thumbnailUrl;
     const duration = this.player.sources?.duration || entryMeta.duration;
     const uploadDate = metadata.createdAt || entryMeta.createdAt || entryMeta.uploadDate;
@@ -76,6 +86,7 @@ export class Seo extends BasePlugin<Record<string, never>> {
       '@type': 'VideoObject',
       name,
       description,
+      keywords: tags,
       thumbnailUrl,
       duration: convertDurationToISO8601(duration!),
       contentUrl: this.player.selectedSource?.url
@@ -257,5 +268,23 @@ export class Seo extends BasePlugin<Record<string, never>> {
 
   private static generateTranscriptFromCuePoints(cuePointsArray: CuePoint[]): string {
     return cuePointsArray.reduce((transcript, cuePoint) => `${transcript} ${cuePoint.metadata.text}`, '').trim();
+  }
+
+  private async getSeoProperties(entryId: string): Promise<object | void> {
+    try {
+      return await this.getBaseEntryProperties(entryId);
+    } catch (error) {
+      this.logger.warn('Failed to get SEO properties', error);
+    }
+  }
+
+  private async getBaseEntryProperties(entryId: string): Promise<object> {
+    try {
+      const response = await (this.player as any).provider.doRequest([{ loader: SeoLoader, params: { entryId } }]);
+      return response.get('seo').seoProperties;
+    } catch (e) {
+      this.logger.warn('failed to get base entry properties from server for entryId:', entryId);
+      return {};
+    }
   }
 }
