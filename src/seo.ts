@@ -6,14 +6,16 @@ import { PlayerEvent } from '../types/player-event';
 import { SeoLoader } from './seo-loader';
 
 export const PLUGIN_NAME = 'seo';
-const SEO_SCRIPT_ID = `${location.hostname}k-player-seo`;
+const hostname = window?.location?.hostname || '';
+const SEO_SCRIPT_ID = `${hostname}k-player-seo`;
 enum CueSourceNames {
   None = 'none',
   TimedMetadata = 'timedMetadata',
   Unisphere = 'unisphere'
 }
 
-export class Seo extends BasePlugin<Record<string, never>> {
+export class Seo extends BasePlugin {
+  public static defaultConfig = {};
   private summaryData?: string;
   private chaptersData?: Chapter[];
   private transcriptData?: string;
@@ -31,13 +33,13 @@ export class Seo extends BasePlugin<Record<string, never>> {
     });
   }
 
-  protected loadMedia(): void {
+  public loadMedia(): void {
     if (!this.cuePointManager) {
       this.logger.warn("kalturaCuepoints haven't registered");
       return;
     }
-    this.eventManager.listen(this.player, this.player.Event.Core.TIMED_METADATA_ADDED, (e) => this.onTimedMetadataAdded(e));
-    this.eventManager.listen(this.player, PlayerEvent.UNISPHERE_CHAPTERS_ADDED, (e) => this.onUnisphereDataAdded(e));
+    this.eventManager.listen(this.player, this.player.Event.Core.TIMED_METADATA_ADDED, (e: any) => this.onTimedMetadataAdded(e));
+    this.eventManager.listen(this.player, PlayerEvent.UNISPHERE_CHAPTERS_ADDED, (e: any) => this.onUnisphereDataAdded(e));
     this.registerCuePointTypes();
   }
 
@@ -57,7 +59,7 @@ export class Seo extends BasePlugin<Record<string, never>> {
   }
 
   private isNotInjectedYet(): boolean {
-    return !document.getElementById(SEO_SCRIPT_ID);
+    return !document?.getElementById(SEO_SCRIPT_ID);
   }
 
   private async getSEOStructuredData(): Promise<WithContext<VideoObject>> {
@@ -107,7 +109,7 @@ export class Seo extends BasePlugin<Record<string, never>> {
   }
 
   private updateStructureDataWithTimeData(): void {
-    const scriptTag = document.getElementById(SEO_SCRIPT_ID);
+    const scriptTag = document?.getElementById(SEO_SCRIPT_ID);
     if (scriptTag) {
       const data = JSON.parse(scriptTag.textContent!);
 
@@ -131,14 +133,14 @@ export class Seo extends BasePlugin<Record<string, never>> {
         name: chapter.name,
         startOffset: chapter.startTime,
         endOffset: chapter.endTime,
-        url: Seo.concatenateStartTimeQueryParam(window.location.href, 'kalturaStartTime', chapter.startTime),
+        url: Seo.concatenateStartTimeQueryParam(window?.location?.href || '', 'kalturaStartTime', chapter.startTime),
         ...(chapter.description && { description: chapter.description })
       };
     });
   }
 
   private static sendSEOStructuredData(SEOStructuredData: WithContext<VideoObject>): void {
-    window.parent.postMessage({ type: 'SEOStructuredData', SEOStructuredData }, '*');
+    window?.parent?.postMessage({ type: 'SEOStructuredData', SEOStructuredData }, '*');
   }
 
   private static concatenateStartTimeQueryParam(url: string, newParamName: string, newParamValue: number): string {
@@ -161,14 +163,14 @@ export class Seo extends BasePlugin<Record<string, never>> {
 
     const name = metadata.name || entryMeta.name;
     const thumbnailUrl = this.player.sources?.poster || entryMeta.thumbnailUrl;
-    const uploadDate = metadata.createdAt || entryMeta.createdAt || entryMeta.uploadDate;
+    const uploadDate = entryMeta.createdAt || entryMeta.uploadDate;
 
     this.logger.debug('SEO metadata validation:', { name, thumbnailUrl, uploadDate });
     return !!(name && thumbnailUrl);
   }
 
   private static isPlayerIframeEmbeded(): boolean {
-    return window.self !== window.top;
+    return window?.self !== window?.top;
   }
 
   public static isValid(): boolean {
@@ -176,11 +178,13 @@ export class Seo extends BasePlugin<Record<string, never>> {
   }
 
   private injectStructureData(jsonLdData: WithContext<VideoObject>): void {
-    const script = document.createElement('script');
+    const script = document?.createElement('script');
+    if (!script) return;
+
     script.id = SEO_SCRIPT_ID;
     script.setAttribute('type', 'application/ld+json');
     script.textContent = JSON.stringify(jsonLdData);
-    document.head.appendChild(script);
+    document.head?.appendChild(script);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
