@@ -163,7 +163,7 @@ export class Seo extends BasePlugin {
 
     const name = metadata.name || entryMeta.name;
     const thumbnailUrl = this.player.sources?.poster || entryMeta.thumbnailUrl;
-    const uploadDate = entryMeta.createdAt || entryMeta.uploadDate;
+    const uploadDate = metadata.createdAt || entryMeta.createdAt || entryMeta.uploadDate;
 
     this.logger.debug('SEO metadata validation:', { name, thumbnailUrl, uploadDate });
     return !!(name && thumbnailUrl);
