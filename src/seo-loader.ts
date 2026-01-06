@@ -1,12 +1,10 @@
-// @ts-ignore
-const { RequestBuilder } = KalturaPlayer.providers;
+import { ILoader } from '@playkit-js/playkit-js-providers/types';
+import { RequestBuilder } from '@playkit-js/playkit-js-providers/ovp-provider';
 
-// @ts-ignore
-class SeoLoader implements KalturaPlayerTypes.ILoader {
+class SeoLoader implements ILoader {
   private entryId: string;
-  public readonly requests: any[];
-
   private _seoProperties = '';
+  public readonly requests: any[];
 
   public static get id(): string {
     return 'seo';
