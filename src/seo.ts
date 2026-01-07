@@ -3,16 +3,19 @@ import { convertDurationToISO8601, convertUnixTimestampToISO8601 } from './date-
 import type { Clip, VideoObject, WithContext } from 'schema-dts';
 import { Chapter, CuePoint, TimedMetadataEvent, UnisphereCuePoint, UnisphereDataEvent, EntryMeta } from './types';
 import { PlayerEvent } from '../types/player-event';
+import { SeoLoader } from './seo-loader';
 
 export const PLUGIN_NAME = 'seo';
-const SEO_SCRIPT_ID = `${location.hostname}k-player-seo`;
+const hostname = window?.location?.hostname || '';
+const SEO_SCRIPT_ID = `${hostname}k-player-seo`;
 enum CueSourceNames {
   None = 'none',
   TimedMetadata = 'timedMetadata',
   Unisphere = 'unisphere'
 }
 
-export class Seo extends BasePlugin<Record<string, never>> {
+export class Seo extends BasePlugin {
+  public static defaultConfig = {};
   private summaryData?: string;
   private chaptersData?: Chapter[];
   private transcriptData?: string;
@@ -30,19 +33,19 @@ export class Seo extends BasePlugin<Record<string, never>> {
     });
   }
 
-  protected loadMedia(): void {
+  public loadMedia(): void {
     if (!this.cuePointManager) {
       this.logger.warn("kalturaCuepoints haven't registered");
       return;
     }
-    this.eventManager.listen(this.player, this.player.Event.Core.TIMED_METADATA_ADDED, (e) => this.onTimedMetadataAdded(e));
-    this.eventManager.listen(this.player, PlayerEvent.UNISPHERE_CHAPTERS_ADDED, (e) => this.onUnisphereDataAdded(e));
+    this.eventManager.listen(this.player, this.player.Event.Core.TIMED_METADATA_ADDED, (e: any) => this.onTimedMetadataAdded(e));
+    this.eventManager.listen(this.player, PlayerEvent.UNISPHERE_CHAPTERS_ADDED, (e: any) => this.onUnisphereDataAdded(e));
     this.registerCuePointTypes();
   }
 
   private async handleSEO(): Promise<void> {
     if (this.hasStructuredDataRequiredProperties()) {
-      const SEOStructuredData: WithContext<VideoObject> = this.getSEOStructuredData();
+      const SEOStructuredData: WithContext<VideoObject> = await this.getSEOStructuredData();
       if (Seo.isPlayerIframeEmbeded()) {
         Seo.sendSEOStructuredData(SEOStructuredData);
       } else if (this.isNotInjectedYet()) {
@@ -56,16 +59,25 @@ export class Seo extends BasePlugin<Record<string, never>> {
   }
 
   private isNotInjectedYet(): boolean {
-    return !document.getElementById(SEO_SCRIPT_ID);
+    return !document?.getElementById(SEO_SCRIPT_ID);
   }
 
-  private getSEOStructuredData(): WithContext<VideoObject> {
+  private async getSEOStructuredData(): Promise<WithContext<VideoObject>> {
     // Handle both sources.metadata and entryMeta structures
     const metadata = this.player.sources?.metadata || {};
     const entryMeta: EntryMeta = (this.player as KalturaPlayer & { config?: { entryMeta?: EntryMeta } }).config?.entryMeta || {};
 
-    const name = metadata.name || entryMeta.name;
-    const description = metadata.description || entryMeta.description;
+    // getSeoProperties call for multilingual support
+    const entryId = this.player.sources?.id || '';
+    let response = {};
+    if (entryId) {
+      response = (await this.getSeoProperties(entryId)) || {};
+    }
+    const seoProps = response as { name?: string; description?: string; tags?: string };
+
+    const name = seoProps.name || metadata.name || entryMeta.name;
+    const description = seoProps.description || metadata.description || entryMeta.description;
+    const tags = seoProps.tags || metadata.tags || entryMeta.tags;
     const thumbnailUrl = this.player.sources?.poster || entryMeta.thumbnailUrl;
     const duration = this.player.sources?.duration || entryMeta.duration;
     const uploadDate = metadata.createdAt || entryMeta.createdAt || entryMeta.uploadDate;
@@ -76,6 +88,7 @@ export class Seo extends BasePlugin<Record<string, never>> {
       '@type': 'VideoObject',
       name,
       description,
+      keywords: tags,
       thumbnailUrl,
       duration: convertDurationToISO8601(duration!),
       contentUrl: this.player.selectedSource?.url
@@ -96,7 +109,7 @@ export class Seo extends BasePlugin<Record<string, never>> {
   }
 
   private updateStructureDataWithTimeData(): void {
-    const scriptTag = document.getElementById(SEO_SCRIPT_ID);
+    const scriptTag = document?.getElementById(SEO_SCRIPT_ID);
     if (scriptTag) {
       const data = JSON.parse(scriptTag.textContent!);
 
@@ -120,14 +133,14 @@ export class Seo extends BasePlugin<Record<string, never>> {
         name: chapter.name,
         startOffset: chapter.startTime,
         endOffset: chapter.endTime,
-        url: Seo.concatenateStartTimeQueryParam(window.location.href, 'kalturaStartTime', chapter.startTime),
+        url: Seo.concatenateStartTimeQueryParam(window?.location?.href || '', 'kalturaStartTime', chapter.startTime),
         ...(chapter.description && { description: chapter.description })
       };
     });
   }
 
   private static sendSEOStructuredData(SEOStructuredData: WithContext<VideoObject>): void {
-    window.parent.postMessage({ type: 'SEOStructuredData', SEOStructuredData }, '*');
+    window?.parent?.postMessage({ type: 'SEOStructuredData', SEOStructuredData }, '*');
   }
 
   private static concatenateStartTimeQueryParam(url: string, newParamName: string, newParamValue: number): string {
@@ -157,7 +170,7 @@ export class Seo extends BasePlugin<Record<string, never>> {
   }
 
   private static isPlayerIframeEmbeded(): boolean {
-    return window.self !== window.top;
+    return window?.self !== window?.top;
   }
 
   public static isValid(): boolean {
@@ -165,11 +178,13 @@ export class Seo extends BasePlugin<Record<string, never>> {
   }
 
   private injectStructureData(jsonLdData: WithContext<VideoObject>): void {
-    const script = document.createElement('script');
+    const script = document?.createElement('script');
+    if (!script) return;
+
     script.id = SEO_SCRIPT_ID;
     script.setAttribute('type', 'application/ld+json');
     script.textContent = JSON.stringify(jsonLdData);
-    document.head.appendChild(script);
+    document.head?.appendChild(script);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -257,5 +272,23 @@ export class Seo extends BasePlugin<Record<string, never>> {
 
   private static generateTranscriptFromCuePoints(cuePointsArray: CuePoint[]): string {
     return cuePointsArray.reduce((transcript, cuePoint) => `${transcript} ${cuePoint.metadata.text}`, '').trim();
+  }
+
+  private async getSeoProperties(entryId: string): Promise<object | void> {
+    try {
+      return await this.getBaseEntryProperties(entryId);
+    } catch (error) {
+      this.logger.warn('Failed to get SEO properties', error);
+    }
+  }
+
+  private async getBaseEntryProperties(entryId: string): Promise<object> {
+    try {
+      const response = await (this.player as any).provider.doRequest([{ loader: SeoLoader, params: { entryId } }]);
+      return response.get('seo').seoProperties;
+    } catch (e) {
+      this.logger.warn('failed to get base entry properties from server for entryId:', entryId);
+      return {};
+    }
   }
 }

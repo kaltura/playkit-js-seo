@@ -47,7 +47,7 @@
     "@babel/preset-env": "^7.17.10",
     "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
-    "@playkit-js/kaltura-player-js": "3.17.4-canary.0-f2eb0dd",
+    "@playkit-js/kaltura-player-js": "3.17.70-canary.0-531b67a",
     "@types/chai": "^4.3.3",
     "@types/mocha": "^9.1.1",
     "@types/node": "^14.11.2",
