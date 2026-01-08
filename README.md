@@ -208,3 +208,4 @@ playkit-js-seo is supported on:
 ## License
 
 playkit-js-seo is released under [Apache 2.0 License](LICENSE)
+
