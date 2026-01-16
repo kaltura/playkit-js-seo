@@ -120,7 +120,10 @@ export class Seo extends BasePlugin {
       if (this.chaptersData?.length) {
         data.hasPart = this.getClips();
       }
-      data.transcript = this.transcriptData;
+
+      if (this.transcriptData) {
+        data.transcript = this.transcriptData;
+      }
 
       scriptTag.textContent = JSON.stringify(data);
     }
@@ -240,9 +243,8 @@ export class Seo extends BasePlugin {
     }
     if (captionData.length) {
       this.transcriptData = Seo.generateTranscriptFromCuePoints(captionData);
-      if (this.cuesSource === CueSourceNames.Unisphere) {
-        this.updateStructureDataWithTimeData();
-      } else {
+      this.updateStructureDataWithTimeData();
+      if (this.cuesSource !== CueSourceNames.Unisphere) {
         this.resolveTimedDataReadyPromise();
         this.cuesSource = CueSourceNames.TimedMetadata;
       }
