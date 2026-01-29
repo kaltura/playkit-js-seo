@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.0.17 (2026-01-29)
+
+
+### Bug Fixes
+
+* **FEC-14860:** Player v7| SEO| transcrpit section is missing from entries without summary ([#26](https://github.com/kaltura/playkit-js-seo/issues/26)) ([3d87b52](https://github.com/kaltura/playkit-js-seo/commit/3d87b521b32efd9c4d37eeaddfba6789f18e4ae7))
+
 ### 1.0.16 (2026-01-15)
 
 ### 1.0.15 (2025-12-18)
