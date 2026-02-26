@@ -128,11 +128,11 @@ export class Seo extends BasePlugin {
       }
 
       if (this.audioTracksData?.length) {
-        hasPart.push(...this.getAudioObjects());
+        hasPart.push(...this.getAudioTracks());
       }
 
       if (this.attachmentData) {
-        hasPart.push(...this.getAttachmentObjects());
+        hasPart.push(...this.getAttachments());
       }
 
       if (this.summaryData) {
@@ -164,7 +164,7 @@ export class Seo extends BasePlugin {
     });
   }
 
-  private getAudioObjects(): AudioObject[] {
+  private getAudioTracks(): AudioObject[] {
     return this.audioTracksData!.map((audioTrack) => {
       return {
         '@type': 'AudioObject',
@@ -174,7 +174,7 @@ export class Seo extends BasePlugin {
     });
   }
 
-  private getAttachmentObjects(): CreativeWork[] {
+  private getAttachments(): CreativeWork[] {
     return this.attachmentData!.map((attachment) => {
       return {
         '@type': 'CreativeWork',
@@ -323,7 +323,7 @@ export class Seo extends BasePlugin {
   private async handleVideoData(): Promise<void> {
     try {
       this.audioTracksData = this.player.getTracks('audio') as AudioTrack[];
-      const assets = await this.assetsService.getKalturaAssets(this.player.sources?.id || '');
+      const assets = await this.assetsService.getAssets(this.player.sources?.id || '');
       this.processMultiLanguageCaptions(assets.captions);
       this.processAttachments(assets.attachments);
     } catch (error) {

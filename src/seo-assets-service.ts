@@ -17,7 +17,7 @@ interface KalturaAssets {
 export class SeoAssetsService {
   constructor(private player: KalturaPlayer, private logger: any) {}
 
-  public async getKalturaAssets(entryId: string): Promise<KalturaAssets> {
+  public async getAssets(entryId: string): Promise<KalturaAssets> {
     const ks = this.player.config.session?.ks || '';
     const data: Map<string, any> = await (this.player as any).provider.doRequest(
       [
