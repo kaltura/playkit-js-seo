@@ -15,7 +15,7 @@ interface KalturaAssets {
 }
 
 export class SeoAssetsService {
-  constructor(private player: KalturaPlayer, private logger: any) {}
+  constructor(private player: KalturaPlayer, private logger: any, private config: any) {}
 
   public async getAssets(entryId: string): Promise<KalturaAssets> {
     const ks = this.player.config.session?.ks || '';
@@ -50,6 +50,9 @@ export class SeoAssetsService {
   }
 
   private async loadCaptionData(captions: KalturaCaptionAsset[], ks: string): Promise<void> {
+    if (!this.config.addAllCaptions) {
+      captions = captions.slice(0, 10);
+    }
     for (const caption of captions) {
       try {
         const contentData: Map<string, any> = await (this.player as any).provider.doRequest(

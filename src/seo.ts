@@ -19,7 +19,9 @@ enum CueSourceNames {
 }
 
 export class Seo extends BasePlugin {
-  public static defaultConfig = {};
+  public static defaultConfig = {
+    addAllCaptions: false
+  };
   private summaryData?: string;
   private chaptersData?: Chapter[];
   private transcriptData?: string;
@@ -34,7 +36,7 @@ export class Seo extends BasePlugin {
 
   constructor(name: string, player: KalturaPlayer, config?: Record<string, never>) {
     super(name, player, config);
-    this.assetsService = new SeoAssetsService(player, this.logger);
+    this.assetsService = new SeoAssetsService(player, this.logger, this.config);
     this.eventManager.listenOnce(this.player, this.player.Event.Core.CHANGE_SOURCE_ENDED, async () => this.handleSEO());
     this.timedDataReadyPromise = new Promise((resolve) => {
       this.resolveTimedDataReadyPromise = resolve;
@@ -359,7 +361,7 @@ export class Seo extends BasePlugin {
               const content = await this.assetsService.downloadByUrl(attachment.downloadUrl);
               return {
                 fileName: attachment.filename,
-                content: content.slice(0, 4000)
+                content: String(content).slice(0, 4000)
               };
             } catch (error) {
               this.logger.warn('Failed to download attachment:', error);
