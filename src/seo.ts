@@ -359,7 +359,7 @@ export class Seo extends BasePlugin {
               const content = await this.assetsService.downloadByUrl(attachment.downloadUrl);
               return {
                 fileName: attachment.filename,
-                content
+                content: content.slice(0, 4000)
               };
             } catch (error) {
               this.logger.warn('Failed to download attachment:', error);
