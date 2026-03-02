@@ -1,9 +1,13 @@
 import { BasePlugin, KalturaPlayer } from '@playkit-js/kaltura-player-js';
 import { convertDurationToISO8601, convertUnixTimestampToISO8601 } from './date-formaters';
-import type { Clip, VideoObject, WithContext } from 'schema-dts';
+import type { Clip, VideoObject, WithContext, AudioObject, CreativeWork } from 'schema-dts';
 import { Chapter, CuePoint, TimedMetadataEvent, UnisphereCuePoint, UnisphereDataEvent, EntryMeta } from './types';
 import { PlayerEvent } from '../types/player-event';
-import { SeoLoader } from './seo-loader';
+import { SeoLoader } from './providers/seo-loader';
+import { KalturaAttachmentAsset, KalturaCaptionAsset } from './providers';
+import { SeoAssetsService } from './seo-assets-service';
+import { extractText } from './utils';
+import { AudioTrack } from '@playkit-js/playkit-js';
 
 export const PLUGIN_NAME = 'seo';
 const hostname = window?.location?.hostname || '';
@@ -15,18 +19,24 @@ enum CueSourceNames {
 }
 
 export class Seo extends BasePlugin {
-  public static defaultConfig = {};
+  public static defaultConfig = {
+    addAllCaptions: false
+  };
   private summaryData?: string;
   private chaptersData?: Chapter[];
   private transcriptData?: string;
+  private attachmentData?: any[];
+  private audioTracksData?: AudioTrack[];
   private timedDataReadyPromise: Promise<void>;
   private resolveTimedDataReadyPromise!: () => void;
+  private assetsService: SeoAssetsService;
   // Used to determine where to take chapters data from
   // Unisphere chapters have precedence over cuepoint chapters
   private cuesSource: CueSourceNames = CueSourceNames.None;
 
   constructor(name: string, player: KalturaPlayer, config?: Record<string, never>) {
     super(name, player, config);
+    this.assetsService = new SeoAssetsService(player, this.logger, this.config);
     this.eventManager.listenOnce(this.player, this.player.Event.Core.CHANGE_SOURCE_ENDED, async () => this.handleSEO());
     this.timedDataReadyPromise = new Promise((resolve) => {
       this.resolveTimedDataReadyPromise = resolve;
@@ -39,6 +49,7 @@ export class Seo extends BasePlugin {
       return;
     }
     this.eventManager.listen(this.player, this.player.Event.Core.TIMED_METADATA_ADDED, (e: any) => this.onTimedMetadataAdded(e));
+    this.eventManager.listen(this.player, this.player.Event.Core.LOADED_METADATA, () => this.handleVideoData());
     this.eventManager.listen(this.player, PlayerEvent.UNISPHERE_CHAPTERS_ADDED, (e: any) => this.onUnisphereDataAdded(e));
     this.registerCuePointTypes();
   }
@@ -112,13 +123,26 @@ export class Seo extends BasePlugin {
     const scriptTag = document?.getElementById(SEO_SCRIPT_ID);
     if (scriptTag) {
       const data = JSON.parse(scriptTag.textContent!);
+      const hasPart = [];
+
+      if (this.chaptersData?.length) {
+        hasPart.push(...this.getClips());
+      }
+
+      if (this.audioTracksData?.length) {
+        hasPart.push(...this.getAudioTracks());
+      }
+
+      if (this.attachmentData) {
+        hasPart.push(...this.getAttachments());
+      }
 
       if (this.summaryData) {
         data.abstract = this.summaryData;
       }
 
-      if (this.chaptersData?.length) {
-        data.hasPart = this.getClips();
+      if (hasPart.length) {
+        data.hasPart = hasPart;
       }
 
       if (this.transcriptData) {
@@ -138,6 +162,26 @@ export class Seo extends BasePlugin {
         endOffset: chapter.endTime,
         url: Seo.concatenateStartTimeQueryParam(window?.location?.href || '', 'kalturaStartTime', chapter.startTime),
         ...(chapter.description && { description: chapter.description })
+      };
+    });
+  }
+
+  private getAudioTracks(): AudioObject[] {
+    return this.audioTracksData!.map((audioTrack) => {
+      return {
+        '@type': 'AudioObject',
+        name: audioTrack.label,
+        inLanguage: audioTrack.language
+      };
+    });
+  }
+
+  private getAttachments(): CreativeWork[] {
+    return this.attachmentData!.map((attachment) => {
+      return {
+        '@type': 'CreativeWork',
+        name: attachment.fileName,
+        text: attachment.content
       };
     });
   }
@@ -222,32 +266,16 @@ export class Seo extends BasePlugin {
   private onTimedMetadataAdded({ payload }: TimedMetadataEvent): void {
     const { KalturaCuePointType, KalturaThumbCuePointSubType } = this.cuePointManager;
     const chapterData: CuePoint[] = [];
-    const captionData: CuePoint[] = [];
 
     payload.cues.forEach((cue: CuePoint) => {
       const { metadata } = cue;
       if (metadata?.cuePointType === KalturaCuePointType.THUMB && metadata?.subType === KalturaThumbCuePointSubType.CHAPTER) {
         chapterData.push(cue);
       }
-      if (metadata?.cuePointType === KalturaCuePointType.CAPTION) {
-        captionData.push(cue);
-      }
     });
     if (chapterData.length && this.cuesSource === CueSourceNames.None) {
       this.chaptersData = Seo.extractRelevantChaptersData(chapterData);
       this.cuesSource = CueSourceNames.TimedMetadata;
-      // if no captions are expected - resolve the promise to allow SEO data update
-      if (!captionData.length) {
-        this.resolveTimedDataReadyPromise();
-      }
-    }
-    if (captionData.length) {
-      this.transcriptData = Seo.generateTranscriptFromCuePoints(captionData);
-      this.updateStructureDataWithTimeData();
-      if (this.cuesSource !== CueSourceNames.Unisphere) {
-        this.resolveTimedDataReadyPromise();
-        this.cuesSource = CueSourceNames.TimedMetadata;
-      }
     }
   }
 
@@ -291,6 +319,54 @@ export class Seo extends BasePlugin {
     } catch (e) {
       this.logger.warn('failed to get base entry properties from server for entryId:', entryId);
       return {};
+    }
+  }
+
+  private async handleVideoData(): Promise<void> {
+    try {
+      this.audioTracksData = this.player.getTracks('audio') as AudioTrack[];
+      const assets = await this.assetsService.getAssets(this.player.sources?.id || '');
+      this.processMultiLanguageCaptions(assets.captions);
+      this.processAttachments(assets.attachments);
+    } catch (error) {
+      this.logger.warn('Failed to handle captions or attachments:', error);
+    }
+  }
+
+  private async processMultiLanguageCaptions(captions: KalturaCaptionAsset[]): Promise<void> {
+    if (captions) {
+      try {
+        let text = '';
+        captions.forEach((caption: KalturaCaptionAsset) => {
+          text += extractText(caption.content);
+        });
+        this.transcriptData = text;
+        this.updateStructureDataWithTimeData();
+      } catch (error) {
+        this.logger.error('Error processing multi-language captions:', error);
+      }
+    }
+  }
+
+  private async processAttachments(attachments: KalturaAttachmentAsset[] = []): Promise<void> {
+    const attachmentPromises = attachments
+      .filter((attachment: KalturaAttachmentAsset) => attachment.fileExt?.toLowerCase() === 'txt' && attachment.downloadUrl)
+      .map(async (attachment) => {
+        try {
+          const content = await this.assetsService.downloadByUrl(attachment.downloadUrl);
+          return {
+            fileName: attachment.filename,
+            content: String(content).slice(0, 4000)
+          };
+        } catch (error) {
+          this.logger.warn('Failed to download attachment:', error);
+          return;
+        }
+      });
+    const textContents = await Promise.all(attachmentPromises);
+    if (textContents.length > 0) {
+      this.attachmentData = textContents;
+      this.updateStructureDataWithTimeData();
     }
   }
 }
