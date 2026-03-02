@@ -348,34 +348,25 @@ export class Seo extends BasePlugin {
     }
   }
 
-  private async processAttachments(attachments: KalturaAttachmentAsset[]): Promise<void> {
-    if (attachments) {
-      try {
-        const txtAttachments = attachments.filter(
-          (attachment: KalturaAttachmentAsset) => attachment.fileExt?.toLowerCase() === 'txt'
-        );
-        const attachmentPromises = txtAttachments
-          .filter((attachment) => attachment.downloadUrl)
-          .map(async (attachment) => {
-            try {
-              const content = await this.assetsService.downloadByUrl(attachment.downloadUrl);
-              return {
-                fileName: attachment.filename,
-                content: String(content).slice(0, 4000)
-              };
-            } catch (error) {
-              this.logger.warn('Failed to download attachment:', error);
-              return;
-            }
-          });
-        const textContents = await Promise.all(attachmentPromises);
-        if (textContents.length > 0) {
-          this.attachmentData = textContents;
-          this.updateStructureDataWithTimeData();
+  private async processAttachments(attachments: KalturaAttachmentAsset[] = []): Promise<void> {
+    const attachmentPromises = attachments
+      .filter((attachment: KalturaAttachmentAsset) => attachment.fileExt?.toLowerCase() === 'txt' && attachment.downloadUrl)
+      .map(async (attachment) => {
+        try {
+          const content = await this.assetsService.downloadByUrl(attachment.downloadUrl);
+          return {
+            fileName: attachment.filename,
+            content: String(content).slice(0, 4000)
+          };
+        } catch (error) {
+          this.logger.warn('Failed to download attachment:', error);
+          return;
         }
-      } catch (error) {
-        this.logger.warn('Failed to fetch attachment data:', error);
-      }
+      });
+    const textContents = await Promise.all(attachmentPromises);
+    if (textContents.length > 0) {
+      this.attachmentData = textContents;
+      this.updateStructureDataWithTimeData();
     }
   }
 }
