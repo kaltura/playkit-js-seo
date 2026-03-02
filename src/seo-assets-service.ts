@@ -50,6 +50,7 @@ export class SeoAssetsService {
   }
 
   private async loadCaptionData(captions: KalturaCaptionAsset[], ks: string): Promise<void> {
+    captions = captions.filter(caption => Number(caption.usage) === 1 || caption.displayOnPlayer === true);
     if (!this.config.addAllCaptions) {
       captions = captions.slice(0, 10);
     }

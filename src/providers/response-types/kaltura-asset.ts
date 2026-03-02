@@ -26,16 +26,22 @@ export interface KalturaCaptionAssetArgs {
   id: string;
   fileExt: string;
   content: [];
+  displayOnPlayer: boolean
+  usage: number | string;
 }
 
 export class KalturaCaptionAsset {
   public id: string;
   public fileExt: string;
   public content: Array<any>;
+  public displayOnPlayer: boolean;
+  public usage: number | string;
 
   constructor(captionAsset: KalturaCaptionAssetArgs) {
     this.id = captionAsset.id;
     this.fileExt = captionAsset.fileExt;
     this.content = [];
+    this.displayOnPlayer = captionAsset.displayOnPlayer;
+    this.usage = captionAsset.usage
   }
 }
