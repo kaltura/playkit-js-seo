@@ -10,7 +10,7 @@ import {
 } from './providers';
 
 interface KalturaAssets {
-  captions: any;
+  captions: KalturaCaptionAsset[];
   attachments: KalturaAttachmentAsset[];
 }
 
@@ -76,7 +76,7 @@ export class SeoAssetsService {
         [{ loader: DownloadUrlLoader, params: { attachments } }],
         ks
       );
-      if (urlsData && urlsData.has(DownloadUrlLoader.id)) {
+      if (urlsData?.has(DownloadUrlLoader.id)) {
         const urlsLoader = urlsData.get(DownloadUrlLoader.id);
         const downloadUrls: Map<string, string> = urlsLoader?.response?.urls;
         attachments.forEach((attachment: KalturaAttachmentAsset) => {

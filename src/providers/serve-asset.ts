@@ -1,6 +1,7 @@
 import { ILoader } from '@playkit-js/playkit-js-providers/types';
 import { RequestBuilder } from '@playkit-js/playkit-js-providers/ovp-provider';
 import { KalturaCaptionAsset } from './response-types';
+import { buildRequests } from './utils/request-builder-helper';
 
 interface ServeAssetlLoaderLoaderParams {
   captions: Array<KalturaCaptionAsset>;
@@ -23,18 +24,7 @@ export class ServeAssetlLoader implements ILoader {
 
   constructor({ captions }: ServeAssetlLoaderLoaderParams) {
     this._captions = captions;
-    this.addRequest(captions, 'caption_captionAsset', 'serveAsJson');
-  }
-
-  private addRequest(items: any[], service: string, action: string): void {
-    const headers: Map<string, string> = new Map();
-    items.forEach((item: { id: string }) => {
-      const itemServeRequest = new RequestBuilder(headers);
-      itemServeRequest.service = service;
-      itemServeRequest.action = action;
-      itemServeRequest.params = { captionAssetId: item.id };
-      this.requests.push(itemServeRequest);
-    });
+    this._requests = buildRequests(captions, 'caption_captionAsset', 'serveAsJson', 'captionAssetId');
   }
 
   public set requests(requests: any[]) {

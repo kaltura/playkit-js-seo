@@ -1,6 +1,7 @@
 import { ILoader } from '@playkit-js/playkit-js-providers/types';
 import { RequestBuilder } from '@playkit-js/playkit-js-providers/ovp-provider';
 import { KalturaAttachmentAsset } from './response-types';
+import { buildRequests } from './utils/request-builder-helper';
 
 export class DownloadUrlLoader implements ILoader {
   private _attachments: Array<KalturaAttachmentAsset>;
@@ -15,18 +16,7 @@ export class DownloadUrlLoader implements ILoader {
 
   constructor({ attachments }: { attachments: Array<KalturaAttachmentAsset> }) {
     this._attachments = attachments;
-    this.addRequest(attachments, 'attachment_attachmentAsset', 'getUrl');
-  }
-
-  public addRequest(items: any[], service: string, action: string): void {
-    const headers: Map<string, string> = new Map();
-    items.forEach((item: { id: string }) => {
-      const itemsDownloadUrlRequest = new RequestBuilder(headers);
-      itemsDownloadUrlRequest.service = service;
-      itemsDownloadUrlRequest.action = action;
-      itemsDownloadUrlRequest.params = { id: item.id };
-      this.requests.push(itemsDownloadUrlRequest);
-    });
+    this._requests = buildRequests(attachments, 'attachment_attachmentAsset', 'getUrl', 'id');
   }
 
   public set requests(requests: any[]) {

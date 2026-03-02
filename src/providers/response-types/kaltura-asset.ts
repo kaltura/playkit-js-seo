@@ -1,6 +1,7 @@
 export interface KalturaAttachmentAssetArgs {
   id: string;
   fileExt: string;
+  downloadUrl: string;
   objectType: string;
   filename: string;
 }
@@ -15,7 +16,7 @@ export class KalturaAttachmentAsset {
   constructor(attachmentAsset: KalturaAttachmentAssetArgs) {
     this.id = attachmentAsset.id;
     this.fileExt = attachmentAsset.fileExt;
-    this.downloadUrl = '';
+    this.downloadUrl = attachmentAsset.downloadUrl;
     this.objectType = attachmentAsset.objectType;
     this.filename = attachmentAsset.filename;
   }
