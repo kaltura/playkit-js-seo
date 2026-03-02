@@ -11,7 +11,6 @@ export class KalturaCaptionAssetListResponse extends BaseServiceResult {
     if (!this.hasError) {
       this.totalCount = responseObj.totalCount;
       if (this.totalCount! > 0) {
-        this.data = [];
         responseObj.objects.map((captionAsset: KalturaCaptionAssetArgs) => this.data.push(new KalturaCaptionAsset(captionAsset)));
       }
     }

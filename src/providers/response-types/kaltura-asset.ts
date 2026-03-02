@@ -26,7 +26,7 @@ export interface KalturaCaptionAssetArgs {
   id: string;
   fileExt: string;
   content: [];
-  displayOnPlayer: boolean
+  displayOnPlayer: boolean;
   usage: number | string;
 }
 
@@ -42,6 +42,6 @@ export class KalturaCaptionAsset {
     this.fileExt = captionAsset.fileExt;
     this.content = [];
     this.displayOnPlayer = captionAsset.displayOnPlayer;
-    this.usage = captionAsset.usage
+    this.usage = captionAsset.usage;
   }
 }

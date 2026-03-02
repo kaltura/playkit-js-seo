@@ -11,7 +11,6 @@ export class KalturaAttachmentAssetListResponse extends BaseServiceResult {
     if (!this.hasError) {
       this.totalCount = responseObj.totalCount;
       if (this.totalCount! > 0) {
-        this.data = [];
         responseObj.objects.map((attachmentAsset: KalturaAttachmentAssetArgs) =>
           this.data.push(new KalturaAttachmentAsset(attachmentAsset))
         );
