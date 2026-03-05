@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.1.0 (2026-03-05)
+
+
+### Features
+
+* **FEC-14703:** [SEO] Multi-Asset Support ([#27](https://github.com/kaltura/playkit-js-seo/issues/27)) ([ed2f3cb](https://github.com/kaltura/playkit-js-seo/commit/ed2f3cb85201ea6119529e7478191974ffd1ce3a))
+
 ### 1.0.17 (2026-01-29)
 
 
