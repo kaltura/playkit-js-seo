@@ -54,7 +54,7 @@ export class SeoAssetsService {
     let foundUsageOne = false;
 
     for (const [language, languageCaptions] of captions) {
-      const hasUsageOne = languageCaptions.some(c => Number(c.usage) === 1);
+      const hasUsageOne = languageCaptions.some((c) => Number(c.usage) === 1);
 
       if (selectedLanguages.length < 10) {
         selectedLanguages.push([language, languageCaptions]);
@@ -73,7 +73,7 @@ export class SeoAssetsService {
     }
     return new Map(selectedLanguages);
   }
-  
+
   private selectCaptions(captions: KalturaCaptionAsset[]): KalturaCaptionAsset[] {
     let captionsByLanguage = this.groupCaptionsByLanguage(captions);
     if (!this.config.addAllCaptions) {
@@ -109,7 +109,6 @@ export class SeoAssetsService {
     }
     return Array.from(byUsage.values());
   }
-
 
   private async loadCaptionData(captions: KalturaCaptionAsset[], ks: string): Promise<void> {
     const selectedCaptions = this.selectCaptions(captions);
