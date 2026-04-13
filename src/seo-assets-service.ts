@@ -49,12 +49,72 @@ export class SeoAssetsService {
     return kalturaAssets;
   }
 
-  private async loadCaptionData(captions: KalturaCaptionAsset[], ks: string): Promise<void> {
-    captions = captions.filter((caption) => Number(caption.usage) === 1 || caption.displayOnPlayer === true);
-    if (!this.config.addAllCaptions) {
-      captions = captions.slice(0, 10);
+  private selectTenLanguages(captions: Map<string, KalturaCaptionAsset[]>): Map<string, KalturaCaptionAsset[]> {
+    const selectedLanguages: Array<[string, KalturaCaptionAsset[]]> = [];
+    let foundUsageOne = false;
+
+    for (const [language, languageCaptions] of captions) {
+      const hasUsageOne = languageCaptions.some(c => Number(c.usage) === 1);
+
+      if (selectedLanguages.length < 10) {
+        selectedLanguages.push([language, languageCaptions]);
+        if (hasUsageOne) {
+          foundUsageOne = true;
+        }
+      } else {
+        if (!foundUsageOne && hasUsageOne) {
+          selectedLanguages[9] = [language, languageCaptions];
+          break;
+        }
+        if (foundUsageOne) {
+          break;
+        }
+      }
     }
+    return new Map(selectedLanguages);
+  }
+  
+  private selectCaptions(captions: KalturaCaptionAsset[]): KalturaCaptionAsset[] {
+    let captionsByLanguage = this.groupCaptionsByLanguage(captions);
+    if (!this.config.addAllCaptions) {
+      captionsByLanguage = this.selectTenLanguages(captionsByLanguage);
+    }
+    const selectedCaptions: KalturaCaptionAsset[] = [];
+    for (const [, languageCaptions] of captionsByLanguage) {
+      const bestCaptionsForLanguage = this.mostAccuratePerUsage(languageCaptions);
+      selectedCaptions.push(...bestCaptionsForLanguage);
+    }
+    return selectedCaptions;
+  }
+
+  private groupCaptionsByLanguage(captions: KalturaCaptionAsset[]): Map<string, KalturaCaptionAsset[]> {
+    const captionsByLanguage = new Map<string, KalturaCaptionAsset[]>();
     for (const caption of captions) {
+      if (!captionsByLanguage.has(caption.language)) {
+        captionsByLanguage.set(caption.language, []);
+      }
+      captionsByLanguage.get(caption.language)!.push(caption);
+    }
+    return captionsByLanguage;
+  }
+
+  private mostAccuratePerUsage(captions: KalturaCaptionAsset[]): KalturaCaptionAsset[] {
+    const byUsage = new Map<number, KalturaCaptionAsset>();
+    for (const caption of captions) {
+      const usage = Number(caption.usage);
+      const existingCaption = byUsage.get(usage);
+      if (!existingCaption || caption.accuracy > existingCaption.accuracy) {
+        byUsage.set(usage, caption);
+      }
+    }
+    return Array.from(byUsage.values());
+  }
+
+
+  private async loadCaptionData(captions: KalturaCaptionAsset[], ks: string): Promise<void> {
+    const selectedCaptions = this.selectCaptions(captions);
+
+    for (const caption of selectedCaptions) {
       try {
         const contentData: Map<string, any> = await (this.player as any).provider.doRequest(
           [{ loader: ServeAssetlLoader, params: { captions: [caption] } }],

@@ -28,6 +28,8 @@ export interface KalturaCaptionAssetArgs {
   content: [];
   displayOnPlayer: boolean;
   usage: number | string;
+  accuracy: number;
+  language: string;
 }
 
 export class KalturaCaptionAsset {
@@ -36,6 +38,8 @@ export class KalturaCaptionAsset {
   public content: Array<any>;
   public displayOnPlayer: boolean;
   public usage: number | string;
+  public accuracy: number;
+  public language: string;
 
   constructor(captionAsset: KalturaCaptionAssetArgs) {
     this.id = captionAsset.id;
@@ -43,5 +47,7 @@ export class KalturaCaptionAsset {
     this.content = [];
     this.displayOnPlayer = captionAsset.displayOnPlayer;
     this.usage = captionAsset.usage;
+    this.accuracy = captionAsset.accuracy;
+    this.language = captionAsset.language;
   }
 }
