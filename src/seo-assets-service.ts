@@ -51,23 +51,27 @@ export class SeoAssetsService {
 
   private selectTenLanguages(captions: Map<string, KalturaCaptionAsset[]>): Map<string, KalturaCaptionAsset[]> {
     const selectedLanguages: Array<[string, KalturaCaptionAsset[]]> = [];
-    let foundUsageOne = false;
+    let hasEAD = false,
+      hasRegular = false;
 
     for (const [language, languageCaptions] of captions) {
-      const hasUsageOne = languageCaptions.some((c) => Number(c.usage) === 1);
+      const hasEADCaption = languageCaptions.some((c) => Number(c.usage) === 1);
+      const hasRegularCaption = languageCaptions.some((c) => Number(c.usage) === 0);
 
       if (selectedLanguages.length < 10) {
         selectedLanguages.push([language, languageCaptions]);
-        if (hasUsageOne) {
-          foundUsageOne = true;
-        }
+        hasEAD ||= hasEADCaption;
+        hasRegular ||= hasRegularCaption;
       } else {
-        if (!foundUsageOne && hasUsageOne) {
-          selectedLanguages[9] = [language, languageCaptions];
+        if (hasEAD && hasRegular) {
           break;
         }
-        if (foundUsageOne) {
-          break;
+        if (!hasEAD && hasEADCaption) {
+          selectedLanguages[9] = [language, languageCaptions];
+          hasEAD = true;
+        } else if (!hasRegular && hasRegularCaption) {
+          selectedLanguages[9] = [language, languageCaptions];
+          hasRegular = true;
         }
       }
     }
