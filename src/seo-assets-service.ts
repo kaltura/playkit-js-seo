@@ -78,7 +78,7 @@ export class SeoAssetsService {
     return new Map(selectedLanguages);
   }
 
-  private selectCaptions(captions: KalturaCaptionAsset[]): KalturaCaptionAsset[] {
+  private selectOptimalCaptions(captions: KalturaCaptionAsset[]): KalturaCaptionAsset[] {
     let captionsByLanguage = this.groupCaptionsByLanguage(captions);
     if (!this.config.addAllCaptions) {
       captionsByLanguage = this.selectTenLanguages(captionsByLanguage);
@@ -115,7 +115,7 @@ export class SeoAssetsService {
   }
 
   private async loadCaptionData(captions: KalturaCaptionAsset[], ks: string): Promise<void> {
-    const selectedCaptions = this.selectCaptions(captions);
+    const selectedCaptions = this.selectOptimalCaptions(captions);
 
     for (const caption of selectedCaptions) {
       try {
