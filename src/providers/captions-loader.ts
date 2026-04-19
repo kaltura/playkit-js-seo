@@ -33,6 +33,10 @@ export class CaptionsLoader implements ILoader {
       filter: {
         entryIdEqual: this._entryId,
         objectType: 'KalturaCaptionAssetFilter'
+      },
+      pager: {
+        pageSize: 500,
+        objectType: 'KalturaFilterPager'
       }
     };
     this.requests.push(captionsListRequest);
