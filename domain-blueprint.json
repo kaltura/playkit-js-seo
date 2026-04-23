@@ -1,0 +1,175 @@
+{
+  "repository": "kaltura/playkit-js-seo",
+  "version": "1.0.0",
+  "lastUpdated": "2026-04-23",
+
+  "coreResponsibility": {
+    "summary": "A Kaltura Player plugin that generates and injects Schema.org structured data (JSON-LD) for video content to improve search engine optimization (SEO) and discoverability.",
+    "type": "plugin",
+    "category": "SEO/Metadata"
+  },
+
+  "domainAndLogicOwnership": {
+    "featureOwnership": [
+      "Schema.org VideoObject structured data generation",
+      "JSON-LD metadata injection into page head",
+      "Chapter/Key Moments structured data (hasPart clips)",
+      "Transcript extraction and structured data inclusion",
+      "Multi-language caption support for SEO",
+      "Attachment metadata processing",
+      "Audio track metadata for accessibility",
+      "Iframe embed communication via postMessage",
+      "Unisphere chapters integration",
+      "Video summary/abstract extraction"
+    ],
+    "dataHandling": {
+      "inputData": [
+        "Player sources metadata (name, description, poster, duration)",
+        "Entry metadata from Kaltura backend (createdAt, endDate, tags)",
+        "Timed metadata/cue points (chapters)",
+        "Unisphere chapters and summary data",
+        "Caption assets (multi-language transcripts)",
+        "Attachment assets (text files)",
+        "Audio tracks information"
+      ],
+      "outputData": [
+        "Schema.org VideoObject JSON-LD structured data",
+        "Clip objects for chapters/key moments",
+        "AudioObject for audio tracks",
+        "CreativeWork for attachments",
+        "Transcript text content"
+      ],
+      "stateManagement": [
+        "Chapter data aggregation from multiple sources",
+        "Transcript data compilation",
+        "Cue source priority tracking (Unisphere vs TimedMetadata)",
+        "Structured data injection state"
+      ]
+    }
+  },
+
+  "integrationPoints": {
+    "upstream": {
+      "repositories": [
+        {
+          "name": "kaltura/kaltura-player-js",
+          "relationship": "Core player SDK providing BasePlugin, event system, and player API",
+          "required": true
+        },
+        {
+          "name": "kaltura/playkit-js-kaltura-cuepoints",
+          "relationship": "Cue Points Manager for chapters and captions (optional for enhanced mode)",
+          "required": false
+        }
+      ],
+      "services": [
+        "Kaltura Backend API (baseEntry.get for multilingual metadata)",
+        "Kaltura Caption Asset API (caption_captionAsset.list, captionAsset.serve)",
+        "Kaltura Attachment Asset API (attachmentAsset.list, attachmentAsset.getUrl)"
+      ]
+    },
+    "downstream": {
+      "consumers": [
+        "Search engines (Google, Bing) via JSON-LD structured data",
+        "Parent frame applications (via postMessage for iframe embeds)",
+        "Video SEO rich results and key moments display"
+      ]
+    },
+    "externalAPIs": [
+      {
+        "name": "Schema.org",
+        "usage": "JSON-LD vocabulary for VideoObject, Clip, AudioObject, CreativeWork types"
+      },
+      {
+        "name": "Kaltura OVP Provider",
+        "usage": "Request builder for backend API calls"
+      }
+    ]
+  },
+
+  "technicalStack": {
+    "primaryLanguages": ["TypeScript", "JavaScript"],
+    "frameworks": ["Preact (types only)", "Webpack", "Karma/Mocha"],
+    "buildTools": ["Webpack", "Babel", "TypeScript Compiler"],
+    "entryPoints": [
+      {
+        "file": "src/index.ts",
+        "description": "Plugin registration entry point"
+      },
+      {
+        "file": "src/seo.ts",
+        "description": "Main Seo class extending BasePlugin - core logic"
+      },
+      {
+        "file": "src/seo-assets-service.ts",
+        "description": "Service for fetching captions and attachments"
+      },
+      {
+        "file": "src/providers/seo-loader.ts",
+        "description": "Loader for multilingual entry metadata"
+      }
+    ],
+    "configurationFiles": [
+      "webpack.config.js",
+      "tsconfig.json",
+      "karma.conf.js"
+    ]
+  },
+
+  "triageKeywords": [
+    "seo",
+    "structured data",
+    "json-ld",
+    "schema.org",
+    "VideoObject",
+    "rich results",
+    "key moments",
+    "video chapters seo",
+    "transcript seo",
+    "search engine optimization",
+    "ld+json",
+    "SEOStructuredData",
+    "postMessage seo",
+    "iframe seo",
+    "hasPart clips",
+    "video metadata injection",
+    "google video indexing",
+    "uploadDate",
+    "contentUrl schema"
+  ],
+
+  "errorPatterns": [
+    "SEO Structured Data Required properties are missing",
+    "kalturaCuepoints haven't registered",
+    "Failed to get SEO properties",
+    "Failed to handle captions or attachments",
+    "Error processing multi-language captions",
+    "Failed to download attachment",
+    "failed to get base entry properties from server"
+  ],
+
+  "modes": {
+    "basic": {
+      "description": "Automatic structured data generation from basic video metadata (name, description, thumbnail, duration, dates)",
+      "requirements": []
+    },
+    "enhanced": {
+      "description": "Includes chapters (key moments) and transcript in structured data",
+      "requirements": [
+        "playback.preload = 'auto'",
+        "kalturaCuepoints plugin enabled"
+      ]
+    }
+  },
+
+  "embedTypes": {
+    "dynamic": {
+      "description": "Direct JSON-LD injection into document head",
+      "action": "Automatic - no customer code required"
+    },
+    "iframe": {
+      "description": "Structured data sent to parent frame via postMessage",
+      "action": "Customer must add message listener to inject JSON-LD"
+    }
+  }
+}
