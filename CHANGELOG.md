@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.1.2 (2026-04-23)
+
+
+### Bug Fixes
+
+* **FEC-14917:** Player V7| SEO| EAD and Captions limits ([#29](https://github.com/kaltura/playkit-js-seo/issues/29)) ([a34389e](https://github.com/kaltura/playkit-js-seo/commit/a34389ed4c13721cc6784b123fb39d3e09d1d2b1))
+
 ### 1.1.1 (2026-03-05)
 
 ## 1.1.0 (2026-03-05)
