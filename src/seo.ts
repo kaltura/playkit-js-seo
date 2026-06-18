@@ -350,10 +350,20 @@ export class Seo extends BasePlugin {
 
   private async processAttachments(attachments: KalturaAttachmentAsset[] = []): Promise<void> {
     const attachmentPromises = attachments
-      .filter((attachment: KalturaAttachmentAsset) => attachment.fileExt?.toLowerCase() === 'txt' && attachment.downloadUrl)
+      .filter(
+        (attachment: KalturaAttachmentAsset) =>
+          ['txt', 'md', 'json'].includes(attachment.fileExt?.toLowerCase() || '') && attachment.downloadUrl
+      )
       .map(async (attachment) => {
         try {
-          const content = await this.assetsService.downloadByUrl(attachment.downloadUrl);
+          const fileExt = attachment.fileExt?.toLowerCase() || '';
+          let content = await this.assetsService.downloadByUrl(attachment.downloadUrl);
+          if (fileExt === 'json') {
+            content = JSON.stringify(content);
+          }
+          if (fileExt === 'md') {
+            content = content.replace(/\r?\n/g, ' ').replace(/\/n/g, ' ').trim();
+          }
           return {
             fileName: attachment.filename,
             content: String(content).slice(0, 4000)
