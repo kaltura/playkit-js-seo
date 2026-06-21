@@ -362,7 +362,7 @@ export class Seo extends BasePlugin {
             content = JSON.stringify(content);
           }
           if (fileExt === 'md') {
-            content = content.replace(/\r?\n/g, ' ').replace(/\/n/g, ' ').trim();
+            content = content.replace(/\r?\n/g, ' ').trim();
           }
           return {
             fileName: attachment.filename,
